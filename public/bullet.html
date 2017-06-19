@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Bullet Task Management</title>
+    <link rel="stylesheet" href="/css/semantic.css">
+    <link rel="stylesheet" href="/css/main.css">
+    <script type="text/javascript" src="/css/jquery.min.js"></script>
+    <script type="text/javascript" src="/css/handlebars-v4.0.10.js"></script>
+    <script type="text/javascript" src="/css/bullet.js"></script>
+</head>
+<script id="hbdemo" type="text/x-handlebars-template">
+  <div class="item">
+    <div class="ui small image">
+
+   </div>
+    <div class="content">
+        <div class="header">
+          {{title}}
+       </div>
+        <div class="description">
+          {{body}}
+        </div><br/>
+      <div class="metadata">
+        <div class="creator">
+          <span><b>Created By:</b>{{creator.first_name}} {{creator.last_name}}</span>
+        </div>
+        <div class="assignees">
+          <span><b>Assignees:</b>{{#each assignees}} {{this.first_name}} {{this.last_name}} {{/each}}</span>
+        </div>
+        <div class="status">
+          <span><b>Status:</b> {{status}}</span> 
+        </div>
+        <div class="created_ts">
+          <span><b>Created:</b>{{created_ts}}</span>
+        </div>
+        <div class="updated_ts">
+         <span><b>Last update:</b>{{updated_ts}}</span>
+        </div>
+      </div>
+      <div class="extra">
+        <div class="ui right floated button green">
+          Done
+        </div>
+        <div class="ui right floated button red">
+          Delete
+        </div>
+        <div class="ui right floated button blue">
+          Assign To
+        </div>
+      </div>
+    </div>
+  </div>
+</script>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Bullet</h1>
+            <h2>Task Management System</h2>
+            <h3>Current tasks:</h3>
+        </div>
+            <div class="ui items tasklist">
+
+            </div> 
+            <div class="ui right floated button brown" id="logOut">
+              Logout
+            </div>
+        </div>
+            
+        </div>
+    </div>
+</body>
+
+</html>

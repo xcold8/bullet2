@@ -1,0 +1,29 @@
+/* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#f6f8f9+0,e5ebee+50,d7dee3+100,f5f7f9+100 */
+body{
+background: #f6f8f9; /* Old browsers */
+background: -moz-radial-gradient(center, ellipse cover, #f6f8f9 0%, #e5ebee 50%, #d7dee3 100%, #f5f7f9 100%); /* FF3.6-15 */
+background: -webkit-radial-gradient(center, ellipse cover, #f6f8f9 0%,#e5ebee 50%,#d7dee3 100%,#f5f7f9 100%); /* Chrome10-25,Safari5.1-6 */
+background: radial-gradient(ellipse at center, #f6f8f9 0%,#e5ebee 50%,#d7dee3 100%,#f5f7f9 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f6f8f9', endColorstr='#f5f7f9',GradientType=1 );
+} /* IE6-9 fallback on horizontal gradient */
+.container{margin: 0 auto;position:absolute;}
+.container .header{;}
+.container .header h1{text-align: center;color:yellow;text-shadow: 2px 2px black;}
+.container .header h2{text-align: center;color:purple;text-shadow: 2px 2px silver;}
+.container .header h3{text-align:center;}
+.container .tasklist{width:60%;margin:0 auto;width:35%;}
+.container .tasklist .item{border: 3px solid; border-radius: 4px;border-color:purple;}
+.container .tasklist .item .image{background-image: url('/images/bullet_triangle_grey.png');background-repeat:no-repeat;}
+.container .tasklist .item .content{padding-top:50px;max-height:0;transition: max-height 3.15s ease-out;overflow:hidden;}
+.container .tasklist .item .content:hover > .metadata{display:inline;}
+.container .tasklist .item .content:hover .container .tasklist .item .image{background-image: url('/images/bullet_triangle_blue.png');background-repeat:no-repeat;}
+.container .tasklist .item .content .header{;}
+.container .tasklist .item .content .description{;}
+.container .tasklist .item .content .metadata{display:none;width:50%;height:50%;line-height:3em;}
+.container .tasklist .item .content .metadata:hover{;}
+div.creator{;};
+div.creator:hover{;}
+div.creator span{;}
+#crtor span{;}
+.container .tasklist .item .content .extra{padding-top:50px;display:block;width:100%;height:30%;}
+.container .tasklist .item .content .extra .button div{cursor:pointer;}
