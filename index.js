@@ -80,16 +80,34 @@ app.get('/api/getData', function(req,res){
 		res.redirect('/login');
 	} else {
 		Task.
-			findOne({'creator': req.user._id}).
+			find({'creator': req.user._id}).
 			populate('creator').
 			populate('assignees').
+			exec(function(err, story){
+				if (!err){
+					console.log({task: story});
+					res.json({task: story});
+				}
+				else {
+					console.log('err occured while tried to populate');
+				}
+			});
+
+		}
+});
+app.get('/api/getUsers', function(req,res){
+	if (!req.isAuthenticated()){
+		res.redirect('/login');
+	} else {
+		User.
+			find({}).
 			exec(function(err, story){
 				if (!err){
 					console.log(story);
 					res.json(story);
 				}
 				else {
-					console.log('err occured while tried to populate');
+					console.log('err occured while tried to get story from db '+err);
 				}
 			});
 
@@ -99,4 +117,24 @@ app.get('/acc/logout', function(req, res){
 	req.logout(req.user._id);
 	console.log(req.isAuthenticated());
 	res.redirect('/login');
+});
+app.post('/api/newTask', function (req,res){
+	var nTask = new models.Task({
+		title: req.body.title,
+		body: req.body.body,
+		creator: req.user._id,
+		assignees: req.body.assignees,
+		status: req.body.status,
+		tasktype:req.body.tasktype,
+		created_ts:+ new Date(),
+		updated_ts:+ new Date()
+});
+	nTask.save(function(err, story){
+		if (err) throw err;
+		else {
+			console.log(story);
+			res.json('OK');
+		}
+	});
+		
 });

@@ -4,13 +4,15 @@
 <head>
     <meta charset="utf-8">
     <title>Bullet Task Management</title>
-    <link rel="stylesheet" href="/css/semantic.css">
+    <link rel="stylesheet" href="/javascript/semantic.css">
     <link rel="stylesheet" href="/css/main.css">
     <script type="text/javascript" src="/css/jquery.min.js"></script>
+    <script type="text/javascript" src="/javascript/semantic.min.js"></script>
     <script type="text/javascript" src="/css/handlebars-v4.0.10.js"></script>
     <script type="text/javascript" src="/css/bullet.js"></script>
 </head>
 <script id="hbdemo" type="text/x-handlebars-template">
+{{#each task}}
   <div class="item">
     <div class="ui small image">
 
@@ -46,15 +48,21 @@
         <div class="ui right floated button red">
           Delete
         </div>
-        <div class="ui right floated button blue">
-          Assign To
-        </div>
       </div>
     </div>
   </div>
+  {{/each}}
+</script>
+<script id="assigndropdown" type="text/x-handlebars-template">
+{{#each objects}}
+  <option value={{_id}}>{{first_name}}</option>
+{{/each}}
 </script>
 <body>
     <div class="container">
+      <div class="ui left floated button brown" id="logOut">
+        Logout
+      </div>
         <div class="header">
             <h1>Bullet</h1>
             <h2>Task Management System</h2>
@@ -63,13 +71,31 @@
             <div class="ui items tasklist">
 
             </div> 
-            <div class="ui right floated button brown" id="logOut">
-              Logout
+            <div class="ui right floated button blue" id="sTask">
+                Submit
             </div>
+            <div class="newTask">
+              <div class="ui right labeled left icon input ttitle">
+                  <i class="file outline icon"></i>
+                  <input type="text" placeholder="Add title" class="title">
+                  <a class="ui tag label">
+                    Add new task title
+                  </a>
+              </div><br/>
+                <div class="ui form">
+                  <div class="field">
+                    <label>Text</label>
+                    <textarea class="body"></textarea>
+                  </div>
+                </div>
+            </div>
+            <div class="assignees">
+              <option value="">Assignees</option>
+              <select name="assignees" multiple="" class="ui fluid dropdown">
+                
+              </select>
         </div>
-            
         </div>
-    </div>
 </body>
 
 </html>
