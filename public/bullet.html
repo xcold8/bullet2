@@ -13,7 +13,7 @@
 </head>
 <script id="hbdemo" type="text/x-handlebars-template">
 {{#each task}}
-  <div class="item">
+  <div class="titem">
     <div class="ui small image">
 
    </div>
@@ -42,15 +42,16 @@
         </div>
       </div>
       <div class="extra">
-        <div class="ui right floated button green">
+        <div class="ui right button green">
           Done
         </div>
-        <div class="ui right floated button red">
+        <div class="ui right button red">
           Delete
         </div>
       </div>
     </div>
   </div>
+  <div class="ui divider"></div>
   {{/each}}
 </script>
 <script id="assigndropdown" type="text/x-handlebars-template">
@@ -68,9 +69,18 @@
             <h2>Task Management System</h2>
             <h3>Current tasks:</h3>
         </div>
-            <div class="ui items tasklist">
-
-            </div> 
+        <div class="ui items tasklist">
+          <div class="ui top attached tabular menu">
+            <a class="item active" data-tab="first">Assigned to me</a>
+            <a class="item" data-tab="second">Created by me</a>
+          </div>
+          <div class="ui bottom attached tab segment active" data-tab="first">
+              
+          </div>
+          <div class="ui bottom attached tab segment" data-tab="second">
+              
+          </div>
+        </div> 
             <div class="ui right floated button blue" id="sTask">
                 Submit
             </div>

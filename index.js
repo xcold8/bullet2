@@ -75,12 +75,34 @@ app.post('/loginauth', passport.authenticate('local', {
    
     //res.redirect('/'+req.user.name+'/'+req.user.lastname);
 });
-app.get('/api/getData', function(req,res){
+app.get('/api/getAssignedData', function(req,res){
+	console.log(req.user);
 	if (!req.isAuthenticated()){
 		res.redirect('/login');
 	} else {
 		Task.
-			find({'creator': req.user._id}).
+			find({ 'assignees': req.user._id }).
+			populate('creator').
+			populate('assignees').
+			exec(function(err, story){
+				if (!err){
+					console.log({task: story});
+					res.json({task: story});
+				}
+				else {
+					console.log('err occured while tried to populate');
+				}
+			});
+
+		}
+});
+app.get('/api/getCreatedData', function(req,res){
+	console.log(req.user);
+	if (!req.isAuthenticated()){
+		res.redirect('/login');
+	} else {
+		Task.
+			find({ 'creator': req.user._id }).
 			populate('creator').
 			populate('assignees').
 			exec(function(err, story){

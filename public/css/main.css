@@ -7,24 +7,24 @@ background: radial-gradient(ellipse at center, #f6f8f9 0%,#e5ebee 50%,#d7dee3 10
 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f6f8f9', endColorstr='#f5f7f9',GradientType=1 );
 font-family:Helvetica;
 } /* IE6-9 fallback on horizontal gradient */
-.container{margin: 0 auto;width:55%;}
+.container{margin: 0 auto;width:35%;margin-top:50px;}
 .container .header{;}
-.container .header h1{text-align: center;color:yellow;text-shadow: 2px 2px black;}
-.container .header h2{text-align: center;color:purple;text-shadow: 2px 2px silver;}
+.container .header h1{text-align:center;color:yellow;text-shadow: 2px 2px black;}
+.container .header h2{text-align:center;color:purple;text-shadow: 2px 2px silver;}
 .container .header h3{text-align:center;}
 .container .tasklist{;}
-.container .tasklist .item{border: 3px solid; border-radius: 4px;border-color:purple;}
-.container .tasklist .item .image{background-image: url('/images/bullet_triangle_grey.png');background-repeat:no-repeat;}
-.container .tasklist .item .content{;}
-.container .tasklist .item .content:hover > .metadata{display:inline;}
-.container .tasklist .item .content:hover .container .tasklist .item .image{background-image: url('/images/bullet_triangle_blue.png');background-repeat:no-repeat;}
-.container .tasklist .item .content .header{;}
-.container .tasklist .item .content .description{;}
-.container .tasklist .item .content .metadata{display:none;width:50%;height:50%;line-height:3em;}
-.container .tasklist .item .content .metadata:hover{;}
+.container .tasklist .titem{;}
+.container .tasklist .titem .image{background-image: url('/images/bullet_triangle_grey.png');background-repeat:no-repeat;}
+.container .tasklist .titem .content{;}
+.container .tasklist .titem .content:hover > .metadata{display:block;padding:0;}
+.container .tasklist .titem .content:hover .container .tasklist .item .image{background-image: url('/images/bullet_triangle_blue.png');background-repeat:no-repeat;}
+.container .tasklist .titem .content .header{font-size:200%;}
+.container .tasklist .titem .content .description{padding-top:10.0px;padding-left:10px;}
+.container .tasklist .titem .content .metadata{display:none;width:45%;height:50%;line-height:1.5em;text-align:left;float:right;padding-left:40px;}
+.container .tasklist .titem .content .metadata:hover{;}
 div.creator{;};
 div.creator:hover{;}
 div.creator span{;}
 #crtor span{;}
-.container .tasklist .item .content .extra{;}
-.container .tasklist .item .content .extra .button div{cursor:pointer;}
+.container .tasklist .titem .content .extra{width:100%;height:100px;}
+.container .tasklist .titem .content .extra .button div{cursor:pointer;}
