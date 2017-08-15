@@ -1,0 +1,45 @@
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Create a new task</title>
+    <link rel="stylesheet" href="/javascript/semantic.css">
+    <link rel="stylesheet" href="/css/newtask.css">
+    <script type="text/javascript" src="/javascript/tinymce/tinymce.min.js"></script>
+    <script type="" src="/javascript/tinymce/init-tinymce.js"></script>
+    <script type="text/javascript" src="/css/jquery.min.js"></script>
+    <script type="text/javascript" src="/javascript/semantic.min.js"></script>
+    <script type="text/javascript" src="/css/handlebars-v4.0.10.js"></script>
+    <script type="text/javascript" src="/css/newtask.js"></script>
+</head>
+<body>
+  <script id="assigndropdown" type="text/x-handlebars-template">
+    {{#each objects}}
+    <option value={{_id}}>{{first_name}}</option>
+    {{/each}}
+  </script>
+  <div class="ui container">
+    <div class="ui large header">Bullet Ticket System</div>
+    <div class="ui medium header">Create a new task</div>
+    <div class="newTask">
+      <div class="ui right labeled left icon input title">
+      <i class="file outline icon"></i>
+      <input type="text" placeholder="Add title" class="title" maxlength='66'>
+      <a class="ui tag label">
+        Add new task title
+      </a>
+    </div><br/></br>
+      <div class="ui form">
+        <div class="field">
+          <label>Text</label>
+          <textarea class="body tinymce"></textarea>
+        </div>
+    </div>
+    </div>
+    <div class="assignees">
+      <option value="">Assignees</option>
+      <select name="assignees" multiple="" class="ui fluid dropdown"></select>
+  </div><br/>
+  <div id="sTask" class="ui large purple button">Submit</div>
+</div>
+</body>
+</html>

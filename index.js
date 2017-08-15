@@ -12,11 +12,11 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(session({
-  secret: 'keyboard cat',
+  secret: 'nveurvdcr1',
   resave: true,
   saveUninitialized: true,
   cookie: { 
-  			maxAge:36000
+  			maxAge: 30 * 24 * 60 * 60 * 1000
   }
 }));
 app.use(express.static(path.join(__dirname, 'public')));
@@ -78,7 +78,8 @@ app.post('/loginauth', passport.authenticate('local', {
 app.get('/api/getAssignedData', function(req,res){
 	console.log(req.user);
 	if (!req.isAuthenticated()){
-		res.redirect('/login');
+		// res.redirect('/login');
+		res.json({error: "not_logged_in"});
 	} else {
 		Task.
 			find({ 'assignees': req.user._id }).
@@ -97,9 +98,9 @@ app.get('/api/getAssignedData', function(req,res){
 		}
 });
 app.get('/api/getCreatedData', function(req,res){
-	console.log(req.user);
 	if (!req.isAuthenticated()){
-		res.redirect('/login');
+		//res.redirect('/login');
+		res.json({error: "not_logged_in"});
 	} else {
 		Task.
 			find({ 'creator': req.user._id }).
@@ -120,7 +121,8 @@ app.get('/api/getCreatedData', function(req,res){
 app.get('/api/getUsers', function(req,res){
 	if (!req.isAuthenticated()){
 		res.redirect('/login');
-	} else {
+	} 
+	else {
 		User.
 			find({}).
 			exec(function(err, story){
@@ -139,6 +141,14 @@ app.get('/acc/logout', function(req, res){
 	req.logout(req.user._id);
 	console.log(req.isAuthenticated());
 	res.redirect('/login');
+});
+app.get('/newTask', function(req, res){
+	if (!req.isAuthenticated){
+		res.redirect('/login');
+	}
+	else {
+		res.sendFile(__dirname +'/public/newtask.html');	}
+
 });
 app.post('/api/newTask', function (req,res){
 	var nTask = new models.Task({

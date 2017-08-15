@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>Bullet Task Management</title>
+    <title>Bullet Ticket System</title>
     <link rel="stylesheet" href="/javascript/semantic.css">
     <link rel="stylesheet" href="/css/main.css">
     <script type="text/javascript" src="/css/jquery.min.js"></script>
@@ -15,7 +15,10 @@
 {{#each task}}
   <div class="titem">
     <div class="ui small image">
-
+      <div class="ui float left checkbox">
+        <input type="checkbox" name="example">
+        <label class="float left"></label>
+      </div>
    </div>
     <div class="content">
         <div class="header">
@@ -54,22 +57,32 @@
   <div class="ui divider"></div>
   {{/each}}
 </script>
-<script id="assigndropdown" type="text/x-handlebars-template">
-{{#each objects}}
-  <option value={{_id}}>{{first_name}}</option>
-{{/each}}
-</script>
 <body>
-    <div class="container">
-      <div class="ui left floated button brown" id="logOut">
-        Logout
-      </div>
+    <div class="ui container">
+      <div id="logOut" class="ui small header">Logout</div>
         <div class="header">
             <h1>Bullet</h1>
-            <h2>Task Management System</h2>
+            <h2>Ticket System</h2>
             <h3>Current tasks:</h3>
         </div>
         <div class="ui items tasklist">
+          <div class="ui table header" id="js-issues-toolbar">
+            <div class="ui float left checkbox allsel">
+              <input type="checkbox" name="selall">
+              <label class="float left"></label>
+            </div>
+            <div class="table-list-counter">
+              <i class="warning circle icon"></i><span>1 Open</span>  
+              <i class="rocket icon"></i><span>9 Ongoing</span>
+              <i class="flag checkered icon"></i><span>19 Closed</span>
+            </div>
+            <div class="table-list-filters">
+              <span class="filters">Creator</span>
+              <span class="filters">Assignee</span>
+              <span class="filters">Created</span>
+              <span class="filters">Modified</span>
+            </div>   
+        </div>
           <div class="ui top attached tabular menu">
             <a class="item active" data-tab="first">Assigned to me</a>
             <a class="item" data-tab="second">Created by me</a>
@@ -81,30 +94,9 @@
               
           </div>
         </div> 
-            <div class="ui right floated button blue" id="sTask">
-                Submit
-            </div>
-            <div class="newTask">
-              <div class="ui right labeled left icon input ttitle">
-                  <i class="file outline icon"></i>
-                  <input type="text" placeholder="Add title" class="title">
-                  <a class="ui tag label">
-                    Add new task title
-                  </a>
-              </div><br/>
-                <div class="ui form">
-                  <div class="field">
-                    <label>Text</label>
-                    <textarea class="body"></textarea>
-                  </div>
-                </div>
-            </div>
-            <div class="assignees">
-              <option value="">Assignees</option>
-              <select name="assignees" multiple="" class="ui fluid dropdown">
-                
-              </select>
-        </div>
+            <div class="ui right floated button blue" id="newTask">
+                <a href="/newTask">Create new ticket</a>
+            </div>  
         </div>
 </body>
 

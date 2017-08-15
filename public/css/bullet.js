@@ -1,4 +1,10 @@
 $(document).ready(function(){
+	function toggle(source) {
+  		checkboxes = document.getElementsByName('example');
+  		for(var i=0, n=checkboxes.length;i<n;i++) {
+    		checkboxes[i].checked = source.checked;
+  		}
+  	}
 	function addUserToDropdown(data){
 		var wrapper = {objects: data};
 		var tmplate = $('#assigndropdown').html();
@@ -11,28 +17,32 @@ $(document).ready(function(){
 var assignedIdx = 0;
 var createdByMeIdx = 0;
 $('.container .item').tab({
-				onLoad:function(tab_name){
-					if (tab_name === 'first' && assignedIdx === 0){
-						$.ajax({
-	  						type:'GET',
-	  						async: false,
-	  						dataType: 'json',
-	  						url: '/api/getAssignedData',
-	  						success: showAssignedData,
-						});
-					}
-					else if (tab_name === 'second' && createdByMeIdx === 0) {
-						$.ajax({
-	  						type:'GET',
-	  						async: false,
-	  						dataType: 'json',
-	  						url: '/api/getCreatedData',
-	  						success: showCreatedData,
-						});
-
-					}
-				}
+	onLoad:function(tab_name){
+		if (tab_name === 'first' && assignedIdx === 0){
+			$.ajax({
+					type:'GET',
+					async: false,
+					dataType: 'json',
+					url: '/api/getAssignedData',
+					success: function(res){
+						showData('first', res);
+					},
 			});
+		}
+		else if (tab_name === 'second' && createdByMeIdx === 0) {
+			$.ajax({
+					type:'GET',
+					async: false,
+					dataType: 'json',
+					url: '/api/getCreatedData',
+					success: function(res){
+						showData('second', res);
+					},
+			});
+
+		}
+	}
+});
 
 	$('#logOut').click(function(){
 		window.location.replace('/acc/logout');
@@ -47,57 +57,36 @@ $('.container .item').tab({
 		});
 	});
 
-	// Within the callback, use .tmpl() to render the data.
-	function showAssignedData(data){
+
+	function showData(tab_name, data) {
+		if (data.error) {
+			if (data.error == "not_logged_in") {
+				window.location.reload(true);
+			}
+			else alert(data.error);
+			return;
+		}
+
 		var template = $('#hbdemo').html();
 		var templateScript = Handlebars.compile(template);
 		console.log('templating...');
-		var htmll = templateScript(data);
-	  	$('div.tab.segment[data-tab="first"]').append(htmll);
+		var html = templateScript(data);
+
+		var selector = 'div.tab.segment[data-tab="' + tab_name + '"]';
+		if (tab_name == 'first') {
+			assignedIdx++;
+		}
+		else {
+			createdByMeIdx++;
+		}
+
+	  	$(selector).append(html);
 	  	assignedIdx++;
-
 	}
-		function showCreatedData(data){
-		var template = $('#hbdemo').html();
-		var templateScript = Handlebars.compile(template);
-		console.log('templating...');
-		var htmll = templateScript(data);
-	  	$('div.tab.segment[data-tab="second"]').append(htmll);
-	  	createdByMeIdx++;
+	// simulate click on first tab
+	$('.item[data-tab="first"]').click();
+	$('.allsel').click(function(){
+		$('.ui.checkbox').checkbox('check');
+	});
 
-	}
-
-
-	$('#sTask').click(function(){
-		var $title = $('input.title').val();
-		var $body = $('textarea').val();
-		var $status = 'new';
-		var $tasktype = 'chore';
-		var $assignees = [];
-		$('a.visible').each(function(index){
-			var id_extraction = $(this).attr("data-value");
-			
-  			 $assignees.push(id_extraction);
-		});
-		console.log($assignees);
-		var newAssigneesArr = $assignees.filter(function(v){return v!==''});
-		var newTaskFromClient = {
-			title: $title,
-			body: $body,
-			status: $status,
-			tasktype: $tasktype,
-			assignees: newAssigneesArr
-		};
-		$.ajax({
-			type:'POST',
-			async:false,
-			data: newTaskFromClient,
-			dataType:'json',
-			url:'/api/newTask'
-		});
-		$("div.newTask").each(function() {
-    		$(this).closest('div').find("input[type=text], textarea").val("");
-		});
-		$('.dropdown').dropdown('restore defaults');
-	});		
 });
