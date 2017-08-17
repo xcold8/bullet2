@@ -13,49 +13,39 @@
 </head>
 <script id="hbdemo" type="text/x-handlebars-template">
 {{#each task}}
-  <div class="titem">
-    <div class="ui small image">
-      <div class="ui float left checkbox">
-        <input type="checkbox" name="example">
-        <label class="float left"></label>
-      </div>
-   </div>
+<div class="ui cards">
+  <div class="card">
     <div class="content">
-        <div class="header">
-          {{title}}
-       </div>
-        <div class="description">
-          {{body}}
-        </div><br/>
-      <div class="metadata">
-        <div class="creator">
-          <span><b>Created By:</b>{{creator.first_name}} {{creator.last_name}}</span>
-        </div>
-        <div class="assignees">
-          <span><b>Assignees:</b>{{#each assignees}} {{this.first_name}} {{this.last_name}} {{/each}}</span>
-        </div>
-        <div class="status">
-          <span><b>Status:</b> {{status}}</span> 
-        </div>
-        <div class="created_ts">
-          <span><b>Created:</b>{{created_ts}}</span>
-        </div>
-        <div class="updated_ts">
-         <span><b>Last update:</b>{{updated_ts}}</span>
-        </div>
+      <img class="right floated mini ui image" src="/images/avatar/large/elliot.jpg">
+      <div class="header">
+        {{title}}
       </div>
-      <div class="extra">
-        <div class="ui right button green">
-          Done
-        </div>
-        <div class="ui right button red">
-          Delete
-        </div>
+      <div class="meta">
+        by {{creator.first_name}} {{creator.last_name}} at {{created_ts}}
+      </div><br/>
+      <div class="assignees">
+       Assigned to: {{#each assignees}} {{this.first_name}} {{this.last_name}}{{/each}}
+      </div>
+      <div class="status">
+       Ticket Status: {{status}}
+      </div>
+      <div class="modified">
+       Ticket Status: {{updated_ts}}
+      </div>
+      <div class="ui divider">
+      </div>
+      <div class="description">{{body}}
+      </div>
+    </div>
+    <div class="extra content">
+      <div class="ui two buttons">
+        <div class="ui basic green button">Done</div>
+        <div class="ui basic red button">Delete</div>
       </div>
     </div>
   </div>
-  <div class="ui divider"></div>
-  {{/each}}
+</div>
+{{/each}}
 </script>
 <body>
     <div class="ui container">

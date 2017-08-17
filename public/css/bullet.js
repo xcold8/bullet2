@@ -1,19 +1,15 @@
 $(document).ready(function(){
+
+	// $('#textbody_1').html(
+	// 	$('#textbody_hidden_1').text()
+	// );
+
 	function toggle(source) {
   		checkboxes = document.getElementsByName('example');
   		for(var i=0, n=checkboxes.length;i<n;i++) {
     		checkboxes[i].checked = source.checked;
   		}
   	}
-	function addUserToDropdown(data){
-		var wrapper = {objects: data};
-		var tmplate = $('#assigndropdown').html();
-		var tmplateScript = Handlebars.compile(tmplate);
-		var html = tmplateScript(wrapper);
-		$('select.dropdown').append(html);
-		$('select.dropdown').dropdown();
-
-	}
 var assignedIdx = 0;
 var createdByMeIdx = 0;
 $('.container .item').tab({
@@ -25,6 +21,7 @@ $('.container .item').tab({
 					dataType: 'json',
 					url: '/api/getAssignedData',
 					success: function(res){
+						
 						showData('first', res);
 					},
 			});
@@ -47,16 +44,6 @@ $('.container .item').tab({
 	$('#logOut').click(function(){
 		window.location.replace('/acc/logout');
 	});
-	$('select.dropdown').click(function(){
-		$.ajax({
-	  	 type:'GET',
-	  	 async: false,
-	 	 dataType: 'json',
-	     url: '/api/getUsers',
-	     success: addUserToDropdown,
-		});
-	});
-
 
 	function showData(tab_name, data) {
 		if (data.error) {
@@ -68,7 +55,7 @@ $('.container .item').tab({
 		}
 
 		var template = $('#hbdemo').html();
-		var templateScript = Handlebars.compile(template);
+		var templateScript = Handlebars.compile(template, {noEscape: true});
 		console.log('templating...');
 		var html = templateScript(data);
 
@@ -79,9 +66,9 @@ $('.container .item').tab({
 		else {
 			createdByMeIdx++;
 		}
-
 	  	$(selector).append(html);
 	  	assignedIdx++;
+
 	}
 	// simulate click on first tab
 	$('.item[data-tab="first"]').click();

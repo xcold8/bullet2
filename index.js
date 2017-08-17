@@ -99,8 +99,7 @@ app.get('/api/getAssignedData', function(req,res){
 });
 app.get('/api/getCreatedData', function(req,res){
 	if (!req.isAuthenticated()){
-		//res.redirect('/login');
-		res.json({error: "not_logged_in"});
+		res.redirect('/login');
 	} else {
 		Task.
 			find({ 'creator': req.user._id }).
@@ -143,7 +142,7 @@ app.get('/acc/logout', function(req, res){
 	res.redirect('/login');
 });
 app.get('/newTask', function(req, res){
-	if (!req.isAuthenticated){
+	if (!req.isAuthenticated()){
 		res.redirect('/login');
 	}
 	else {
@@ -164,9 +163,30 @@ app.post('/api/newTask', function (req,res){
 	nTask.save(function(err, story){
 		if (err) throw err;
 		else {
-			console.log(story);
-			res.json('OK');
+			res.json(story._id);
 		}
 	});
-		
+});
+app.get('/task/:id', function(req,res){
+	if (!req.isAuthenticated()){
+		res.redirect('/login');
+	}
+	else {
+		res.sendFile(__dirname+'/public/taskfeed.html');
+	}
+});
+app.get('/api/task/:id', function(req, res){
+	console.log(req.params.id);
+	Task.find({_id: req.params.id}).
+		populate('creator').
+		populate('assignees').
+		exec(function(err, story){
+			if (!err){
+				console.log(story);
+				res.json({task: story});
+			}
+			else {
+				console.log('err occured when tried to get story from db');
+			}
+		});
 });
