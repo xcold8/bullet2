@@ -11,7 +11,7 @@ $(document).ready(function(){
 			}
 			else alert(data.error);
 				return;
-			}
+		}
 		var template = $('#taskfeed').html();
 		var templateScript = Handlebars.compile(template, {noEscape: true});
 		var html = templateScript(data);

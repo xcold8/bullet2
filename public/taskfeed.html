@@ -1,7 +1,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Create a new task</title>
+    <title>Single Task Mode</title>
     <link rel="stylesheet" href="/javascript/semantic.css">
     <link rel="stylesheet" href="/css/newtask.css">
     <script type="text/javascript" src="/javascript/tinymce/tinymce.min.js"></script>
@@ -36,7 +36,7 @@
           Ticket Status: {{status}}
         </div>
         <div class="modified">
-          Ticket Status: {{updated_ts}}
+          Last Update: {{updated_ts}}
         </div>
         <div class="ui divider">
         </div>
@@ -45,8 +45,17 @@
     </div>
     <div class="extra content">
       <div class="ui two buttons">
-        <div class="ui basic green button">Done</div>
-        <div class="ui basic red button">Delete</div>
+        <div class="unstarted">
+          <div class="ui basic blue button">Start</div>    
+        </div>
+        <div class="started">
+          <div class="ui basic orange button">Pause</div>
+          <div class="ui basic green button">Accept</div>
+          <div class="ui basic red button">Reject</div>
+        </div>
+        <div class="finished">
+        <div class="ui basic purple button">Restart</div>
+        </div>
       </div>
     </div>
   </div>
@@ -55,7 +64,7 @@
 </script>
   <div class="ui container">
     <div class="ui large header">Bullet Ticket System</div>
-    <div class="ui medium header">Task Edit Mode</div>
+    <div class="ui medium header">Single Task Mode</div>
     <div class="task_item">
     </div>
     <div class="newTask">

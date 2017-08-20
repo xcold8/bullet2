@@ -3,3 +3,5 @@ body{margin:0 auto;}
 .card {width:900px !important;}
 div.newTask{padding-top:50px;width:900px;}
 .assignees{width:900px;}
+
+.started{margin:0 20px;}
