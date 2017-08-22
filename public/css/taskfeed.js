@@ -3,8 +3,7 @@ $(document).ready(function(){
    		return url.replace(/^https?:\/\//, '').split('/')[index];
 	};
 
-	function showDataOnFeed(data){
-		console.log(typeof data);
+	function showTaskOnFeed(data){
 		if (data.error) {
 			if (data.error == "not_logged_in") {
 				window.location.reload(true);
@@ -18,6 +17,20 @@ $(document).ready(function(){
 		var selector = '.task_item';
 		$(selector).append(html);
 	}
+	function showCommentOnFeed(data){
+		if (data.error) {
+			if (data.error == "not_logged_in") {
+				window.location.reload(true);
+			}
+			else alert(data.error);
+				return;
+		}
+		var template = $('#newComment').html();
+		var templateScript = Handlebars.compile(template, {noEscape: true});
+		var html = templateScript(data);
+		var selector = '.cbox';
+		$(selector).append(html);
+	}
 
 	$.ajax({
 		type: 'GET',
@@ -25,8 +38,28 @@ $(document).ready(function(){
 		dataType: 'json',
 		url: '/api/task/'+getSegment(window.location.href, 2),
 		success: function(res){
-			showDataOnFeed(res);
+			showTaskOnFeed(res);
 		}
 	});
 
+$('#sComment').click(function(){
+		var $commentBody = tinyMCE.activeEditor.getContent({});
+		var task = getSegment(window.location.href, 2);
+		var newComment = {
+			task: task,
+			comment_body: $commentBody
+		};
+		$.ajax({
+			type: 'POST',
+			async: true,
+			data: newComment,
+			datatype: 'json',
+			url: '/api/newComment',
+			success:function(res) {
+				showCommentOnFeed(newComment);
+			}
+		});
+	});
+
 });
+	

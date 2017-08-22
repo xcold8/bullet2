@@ -23,6 +23,7 @@ var schemaTasks = new Schema({
 	assignees: [{type: Schema.ObjectId, ref:'User'}],
 	status: String,
 	tasktype: String,
+	comments:[{type: Schema.ObjectId, ref:'Comm'}],
 	created_ts: Date,
 	updated_ts: { type: Date, default: Date.now },
 });
@@ -36,8 +37,16 @@ var schemaTag = new Schema({
 });
 var Tag = mongoose.model('Tag', schemaTag);
 
+var schemaComment = new Schema({
+	creator: {type: Schema.ObjectId, ref:'User'},
+	comment_body: String,
+	created_ts: Date,
+});
+var Comm = mongoose.model('Comm', schemaComment);
+
 module.exports = {
 	User: User,
 	Task: Task,
-	Tag: Tag
+	Tag: Tag,
+	Comm: Comm
 };

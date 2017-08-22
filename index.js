@@ -172,21 +172,63 @@ app.get('/task/:id', function(req,res){
 		res.redirect('/login');
 	}
 	else {
-		res.sendFile(__dirname+'/public/taskfeed.html');
+		Task.findById(req.params.id, function(err, result){
+			if (!result){
+				console.log('Could not get query, reason: '+err);
+				res.redirect('/404');
+			}
+			else if (result){
+				res.sendFile(__dirname+'/public/taskfeed.html');
+			}
+		});
 	}
 });
 app.get('/api/task/:id', function(req, res){
-	console.log(req.params.id);
 	Task.find({_id: req.params.id}).
 		populate('creator').
 		populate('assignees').
+		populate({
+			path: 'comments',
+			populate: {
+				path: 'creator',
+				model:'Comm'
+			}
+		}).
 		exec(function(err, story){
 			if (!err){
-				console.log(story);
 				res.json({task: story});
 			}
 			else {
 				console.log('err occured when tried to get story from db');
 			}
 		});
+});
+app.get('/404', function (req, res){
+	res.send('Page does not exist');
+});
+app.post('/api/newComment', function(req, res){
+	var nComment = new models.Comm({
+		creator: req.user._id,
+		comment_body: req.body.comment_body,
+		created_ts: + new Date()
+	});
+	nComment.save(function(err, comment){
+		if (err) throw err;
+		else {
+			Task.findById(req.body.task, function(err, task){
+				if (err) throw err;
+				else {
+					task.comments.push(comment._id);
+				task.save(function(err, story){
+				if (err) throw err;
+				else {
+					console.log(story);
+					res.json(story);
+				}
+			});
+		}
+	});
+		}
+	});
+
 });

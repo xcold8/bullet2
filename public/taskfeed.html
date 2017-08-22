@@ -20,46 +20,76 @@
   </script>
   <script id="taskfeed" type="text/x-handlebars-template">
   {{#each task}}
-    <div class="ui cards">
-      <div class="card">
-        <div class="content">
-          <div class="header">
-            {{title}}
-          </div>
-        <div class="meta">
-          by {{creator.first_name}} {{creator.last_name}} at {{created_ts}}
-        </div><br/>
-        <div class="assignees">
-          Assigned to: {{#each assignees}} {{this.first_name}} {{this.last_name}}{{/each}}
-        </div>
-        <div class="status">
-          Ticket Status: {{status}}
-        </div>
-        <div class="modified">
-          Last Update: {{updated_ts}}
-        </div>
-        <div class="ui divider">
-        </div>
-        <div class="description">{{body}}
-        </div>
+  <div class="ui container tfeed">
+    <div class="ui large header">
+      {{title}}
     </div>
-    <div class="extra content">
-        <div class="btn_state unstarted">
-          <div class="ui basic blue button">Start</div>    
+    <div class="ui gold small header meta">
+      #{{_id}}
+    </div>
+    <div class="extra">
+      <div class="ui label yellow not_started">
+        <i class="info circle icon"></i> {{status}}
+      </div>
+      <div class="creator">
+        {{creator.first_name}} {{creator.last_name}}
+        <div class="create_info">created this ticket 1h ago - 6 Comments
         </div>
-        <div class="btn_state started">
-          <div class="ui basic orange button">Pause</div>
-        </div>
-        <div class="btn_state finished_owner">
-          <div class="ui basic green button">Accept</div>
-          <div class="ui basic red button">Reject</div>
-        </div>
-        <div class="btn_state finished_assignee">
-          <div class="ui basic purple button">Restart</div>
-        </div>
+      </div>
+    </div>
+    <div class="ui divider">
     </div>
   </div>
-</div>
+  <div class="ui attached teal message user_action">
+    <div class="ui tiny header">
+      {{creator.first_name}} {{creator.last_name}} commented 20m ago
+    </div>
+  </div>
+  <div class="ui attached fluid message textarea_body">
+    {{body}}
+  </div>
+  <div class="ui feed">
+    <div class="event">
+      <div class="label">
+      </div>
+      <div class="content">
+        <div class="summary">
+          {{creator.first_name}} {{creator.last_name}} self assigned this
+          <div class="date">
+            3 days ago
+          </div>
+        </div>
+      </div>
+    </div>
+  </div><br/>
+  <div class="cbox ui container">
+  </div>
+{{/each}}
+</script>
+<script id="newComment" type="text/x-handlebars-template">
+{{#each task}}
+  <div class="ui attached blue message user_action">
+    <div class="ui tiny header">
+      {{comments.creator.first_name}} {{comments.creator.last_name}} commented x ago
+    </div>
+  </div>
+  <div class="ui attached fluid message textarea_body">
+    {{comments.comment_body}}
+  </div>
+  <div class="ui feed">
+    <div class="event">
+      <div class="label">
+      </div>
+      <div class="content">
+        <div class="summary">
+          {{comments.creator.first_name}} {{comments.creator.last_name}} commented
+          <div class="date">
+            a few seconds ago
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 {{/each}}
 </script>
   <div class="ui container">
@@ -67,26 +97,16 @@
     <div class="ui medium header">Single Task Mode</div>
     <div class="task_item">
     </div>
-    <div class="newTask">
-      <div class="ui right labeled left icon input title">
-      <i class="file outline icon"></i>
-      <input type="text" placeholder="Add title" class="title" maxlength='66'>
-      <a class="ui tag label">
-        Add a comment title
-      </a>
-    </div><br/></br>
+    <div class="newComment">
       <div class="ui form">
         <div class="field">
-          <label>Comment body</label>
-          <textarea class="body tinymce"></textarea>
+          <label>Add a comment...</label>
+          <textarea class="c_body tinymce"></textarea>
         </div>
     </div>
     </div>
-    <div class="assignees">
-      <option value="">Assignees</option>
-      <select name="assignees" multiple="" class="ui fluid dropdown"></select>
-  </div><br/>
-  <div id="sTask" class="ui large purple button">Submit</div>
+   <br/>
+  <div id="sComment" class="ui large purple button">Submit</div>
 </div>
 </body>
 </html>

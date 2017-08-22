@@ -1,7 +1,22 @@
-body{margin:0 auto;}
-.ui.container{padding-top:50px;width:900px;}
-.card {width:900px !important;}
-div.newTask{padding-top:50px;width:900px;}
-.assignees{width:900px;}
+.tfeed div.ui.large.header{;}
+div.small.header.meta {color: #a3aab1;display:inline-block !important;overflow:hidden;}
 
-.started{margin:0 20px;}
+.extra .ui.label {
+  margin: 0 auto;
+}
+
+.extra .creator {
+  display: inline-block;
+  font-size: 14px
+}
+
+.extra .creator .create_info {
+  display: inline-block;
+  font-weight: lighter;
+}
+
+.textarea_body {
+  height: 150px;
+  border-top: 0px;
+  box-shadow: 0em 0em 0em 1px #10A3A3 inset !important;
+}

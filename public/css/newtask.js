@@ -31,7 +31,7 @@ $(document).ready(function(){
 		};
 		$.ajax({
 			type:'POST',
-			async:false,
+			async:true,
 			data: newTaskFromClient,
 			dataType:'json',
 			url:'/api/newTask',
@@ -48,10 +48,11 @@ $(document).ready(function(){
 	$('select.dropdown').click(function(){
 		$.ajax({
 	  	 type:'GET',
-	  	 async: false,
+	  	 async: true,
 	 	 dataType: 'json',
 	     url: '/api/getUsers',
 	     success: addUserToDropdown,
 		});
 	});
-});
+});	
+
