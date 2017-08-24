@@ -7,6 +7,7 @@ $(document).ready(function(){
 	};
 
 	function showTaskOnFeed(data){
+		$('.dimmer').removeClass('active');
 		if (data.error) {
 			if (data.error == "not_logged_in") {
 				window.location.reload(true);

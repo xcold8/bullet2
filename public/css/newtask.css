@@ -1,3 +1,4 @@
+body {height:100%;}
 .tfeed div.ui.large.header{;}
 div.small.header.meta {color: #a3aab1;display:inline-block !important;overflow:hidden;}
 
@@ -20,3 +21,4 @@ div.small.header.meta {color: #a3aab1;display:inline-block !important;overflow:h
   border-top: 0px;
   box-shadow: 0em 0em 0em 1px #10A3A3 inset !important;
 }
+.ui.dimmer.active{position:fixed;height:100%;}
