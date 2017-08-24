@@ -12,7 +12,7 @@ $(document).ready(function(){
 
 	$('#sTask').click(function(){
 		var $title = $('input.title').val();
-		var $body = tinyMCE.activeEditor.getContent({});
+		var $comment_title = tinyMCE.activeEditor.getContent({});
 		var $status = 'new';
 		var $tasktype = 'chore';
 		var $assignees = [];
@@ -24,7 +24,10 @@ $(document).ready(function(){
 		var newAssigneesArr = $assignees.filter(function(v){return v!==''});
 		var newTaskFromClient = {
 			title: $title,
-			body: $body,
+			comments: { 
+				title: $comment_title,
+				created_ts: new Date(),
+			},
 			status: $status,
 			tasktype: $tasktype,
 			assignees: newAssigneesArr

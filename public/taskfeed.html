@@ -13,100 +13,72 @@
     <script type="text/javascript" src="/css/taskfeed.js"></script>
 </head>
 <body>
+  <div class="ui container">
+      <div class="ui large header">Bullet Ticket System</div>
+      <div class="ui medium header">Single Task Mode</div>
+      <div class="ui container tfeed">
+        <div class="ui large header" id="task_title">
+          
+        </div>
+        <div class="ui small header meta" id="task_id">
+          
+        </div>
+        <div class="extra">
+          <div class="ui label yellow not_started" id="task_status">
+            <i class="info circle icon"></i>
+          </div>
+          <div class="creator">
+            <span id="task_creator"></span>
+            <div class="create_info">created this ticket 1h ago - 6 Comments
+            </div>
+          </div>
+        </div>
+        <div class="ui divider"></div>
+        <div id="comments_cont"></div>
+      </div>
+      <div class="newComment">
+        <div class="ui form">
+          <div class="field">
+            <label>Add a comment...</label>
+            <textarea class="c_body tinymce"></textarea>
+          </div>
+        </div>
+      </div>
+    <div id="sComment" class="ui large purple button">Submit</div>
+  </div>
+
+
   <script id="assigndropdown" type="text/x-handlebars-template">
     {{#each objects}}
     <option value={{_id}}>{{first_name}}</option>
     {{/each}}
   </script>
-  <script id="taskfeed" type="text/x-handlebars-template">
-  {{#each task}}
-  <div class="ui container tfeed">
-    <div class="ui large header">
+
+  <script id="comment_template" type="text/x-handlebars-template">
+    {{#each comments}}
+    <div class="ui attached teal message user_action">
+      <div class="ui tiny header">
+        {{creator.first_name}} {{creator.last_name}} commented 20m ago
+      </div>
+    </div>
+    <div class="ui attached fluid message textarea_body">
       {{title}}
     </div>
-    <div class="ui gold small header meta">
-      #{{_id}}
-    </div>
-    <div class="extra">
-      <div class="ui label yellow not_started">
-        <i class="info circle icon"></i> {{status}}
-      </div>
-      <div class="creator">
-        {{creator.first_name}} {{creator.last_name}}
-        <div class="create_info">created this ticket 1h ago - 6 Comments
+    <div class="ui feed">
+      <div class="event">
+        <div class="label">
         </div>
-      </div>
-    </div>
-    <div class="ui divider">
-    </div>
-  </div>
-  <div class="ui attached teal message user_action">
-    <div class="ui tiny header">
-      {{creator.first_name}} {{creator.last_name}} commented 20m ago
-    </div>
-  </div>
-  <div class="ui attached fluid message textarea_body">
-    {{body}}
-  </div>
-  <div class="ui feed">
-    <div class="event">
-      <div class="label">
-      </div>
-      <div class="content">
-        <div class="summary">
-          {{creator.first_name}} {{creator.last_name}} self assigned this
-          <div class="date">
-            3 days ago
+        <div class="content">
+          <div class="summary">
+            {{creator.first_name}} {{creator.last_name}} self assigned this
+            <div class="date">
+              3 days ago
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div><br/>
-  <div class="cbox ui container">
-  </div>
-{{/each}}
+    {{/each}}
 </script>
-<script id="newComment" type="text/x-handlebars-template">
-{{#each task}}
-  <div class="ui attached blue message user_action">
-    <div class="ui tiny header">
-      {{comments.creator.first_name}} {{comments.creator.last_name}} commented x ago
-    </div>
-  </div>
-  <div class="ui attached fluid message textarea_body">
-    {{comments.comment_body}}
-  </div>
-  <div class="ui feed">
-    <div class="event">
-      <div class="label">
-      </div>
-      <div class="content">
-        <div class="summary">
-          {{comments.creator.first_name}} {{comments.creator.last_name}} commented
-          <div class="date">
-            a few seconds ago
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-{{/each}}
-</script>
-  <div class="ui container">
-    <div class="ui large header">Bullet Ticket System</div>
-    <div class="ui medium header">Single Task Mode</div>
-    <div class="task_item">
-    </div>
-    <div class="newComment">
-      <div class="ui form">
-        <div class="field">
-          <label>Add a comment...</label>
-          <textarea class="c_body tinymce"></textarea>
-        </div>
-    </div>
-    </div>
-   <br/>
-  <div id="sComment" class="ui large purple button">Submit</div>
-</div>
 </body>
 </html>

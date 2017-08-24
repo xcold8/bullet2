@@ -18,7 +18,6 @@ var User = mongoose.model('User', userSchema);
 
 var schemaTasks = new Schema({
 	title: String,
-	body: String,
 	creator: {type: Schema.ObjectId, ref:'User'},
 	assignees: [{type: Schema.ObjectId, ref:'User'}],
 	status: String,
@@ -39,7 +38,7 @@ var Tag = mongoose.model('Tag', schemaTag);
 
 var schemaComment = new Schema({
 	creator: {type: Schema.ObjectId, ref:'User'},
-	comment_body: String,
+	title: String,
 	created_ts: Date,
 });
 var Comm = mongoose.model('Comm', schemaComment);

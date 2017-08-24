@@ -5,6 +5,7 @@ var jsonParser = bodyParser.json();
 var models = require('./models');
 var Task = models.Task;
 var User = models.User;
+var Comm = models.Comm;
 var express = require('express');
 var session = require('express-session');
 var app = express();
@@ -150,20 +151,32 @@ app.get('/newTask', function(req, res){
 
 });
 app.post('/api/newTask', function (req,res){
-	var nTask = new models.Task({
-		title: req.body.title,
-		body: req.body.body,
+	var nComment = new models.Comm({
 		creator: req.user._id,
-		assignees: req.body.assignees,
-		status: req.body.status,
-		tasktype:req.body.tasktype,
-		created_ts:+ new Date(),
-		updated_ts:+ new Date()
-});
-	nTask.save(function(err, story){
+		title: req.body.comments.title,
+		created_ts: req.body.comments.created_ts,
+	});
+	nComment.save(function(err, firstComment){
 		if (err) throw err;
 		else {
-			res.json(story._id);
+				var nTask = new models.Task({
+				title: req.body.title,
+				creator: req.user._id,
+				assignees: req.body.assignees,
+				status: req.body.status,
+				tasktype:req.body.tasktype,
+				comments: [firstComment],
+				created_ts:+ new Date(),
+				updated_ts:+ new Date()
+			});
+				nTask.save(function(err, story){
+					if (err) throw err;
+					else {
+						res.json(story._id);
+					}
+				});
+
+				
 		}
 	});
 });
@@ -184,19 +197,23 @@ app.get('/task/:id', function(req,res){
 	}
 });
 app.get('/api/task/:id', function(req, res){
-	Task.find({_id: req.params.id}).
+	Task.findById(req.params.id).
 		populate('creator').
 		populate('assignees').
 		populate({
-			path: 'comments',
+			path: "comments",
 			populate: {
-				path: 'creator',
-				model:'Comm'
+				path: "creator",
+				model: "User"
 			}
-		}).
-		exec(function(err, story){
+		})
+		.exec(function(err, story){
 			if (!err){
-				res.json({task: story});
+				var data = {
+					task: story,
+					current_user: req.user,
+				};
+				res.json(data);
 			}
 			else {
 				console.log('err occured when tried to get story from db');
@@ -209,26 +226,36 @@ app.get('/404', function (req, res){
 app.post('/api/newComment', function(req, res){
 	var nComment = new models.Comm({
 		creator: req.user._id,
-		comment_body: req.body.comment_body,
+		title: req.body.title,
 		created_ts: + new Date()
 	});
 	nComment.save(function(err, comment){
 		if (err) throw err;
 		else {
-			Task.findById(req.body.task, function(err, task){
+			Task.findById(req.body.task_id, function(err, task){
 				if (err) throw err;
 				else {
 					task.comments.push(comment._id);
-				task.save(function(err, story){
-				if (err) throw err;
-				else {
-					console.log(story);
-					res.json(story);
+					task.save(function(err, story){
+						if (err) throw err;
+						else {
+							Comm.findById(comment._id).
+							populate('creator').
+							exec(function(err, result){
+								if (err) throw err;
+								else {
+									console.log(result);
+									var cdata = {
+										comment: result,
+										current_user: req.user
+									};
+									res.json(cdata);
+								}
+							});
+						}
+					});
 				}
 			});
 		}
 	});
-		}
-	});
-
 });
