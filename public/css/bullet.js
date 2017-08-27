@@ -49,7 +49,6 @@ $('.container .item').tab({
 			else alert(data.error);
 			return;
 		}
-		$('.page.dimmer').removeClass('active');
 		var template = $('#hbdemo').html();
 		var templateScript = Handlebars.compile(template, {noEscape: true});
 		console.log('templating...');
@@ -63,6 +62,7 @@ $('.container .item').tab({
 			createdByMeIdx++;
 		}
 	  	$(selector).append(html);
+	  	$('.page.dimmer').removeClass('active');
 	  	assignedIdx++;
 
 	}
