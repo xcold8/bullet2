@@ -1,9 +1,5 @@
 $(document).ready(function(){
 
-	// $('#textbody_1').html(
-	// 	$('#textbody_hidden_1').text()
-	// );
-
 	function toggle(source) {
   		checkboxes = document.getElementsByName('example');
   		for(var i=0, n=checkboxes.length;i<n;i++) {
@@ -53,7 +49,7 @@ $('.container .item').tab({
 			else alert(data.error);
 			return;
 		}
-
+		$('.page.dimmer').removeClass('active');
 		var template = $('#hbdemo').html();
 		var templateScript = Handlebars.compile(template, {noEscape: true});
 		console.log('templating...');
