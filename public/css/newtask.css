@@ -22,3 +22,20 @@ div.small.header.meta {color: #a3aab1;display:inline-block !important;overflow:h
   box-shadow: 0em 0em 0em 1px #10A3A3 inset !important;
 }
 .ui.dimmer.active{position:fixed;height:100%;}
+.comments_cont .textarea_body{;}
+.textarea_body .actionBtns{position:relative;top:30px;}
+.textarea_body .actionBtns .assigneeBtn {position:relative;top:38px;right:18px;}
+.textarea_body .actionBtns .creatorBtn {position:relative;top:38px;right:18px;}
+.btncontainer .start{display:none;}
+.btncontainer .start.active{display:block;}
+.btncontainer .reject{display:none;}
+.btncontainer .accept{display:none;}
+.btncontainer .reject.active{display:block;}
+.btncontainer .accept.active{display:block;}
+.btncontainer .finished{display:none;}
+.btncontainer .rejected{display:none;}
+.btncontainer .finished.active{display:block;}
+.btncontainer .rejected.active{display:block;}
+.btncontainer .finish{display:none;}
+.btncontainer .finish.active{display:block;}
+

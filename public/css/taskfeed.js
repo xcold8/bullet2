@@ -2,6 +2,33 @@ var current_user = null;
 var taskForCommentData = null;
 
 $(document).ready(function(){
+
+	function modifyCssByData(data){
+		$('.btncontainer div.button').removeClass('active');
+		if (!data.is_assignee && data.task.creator._id.toString() != current_user._id.toString()){
+				return;
+		}
+		else if (data.is_assignee || data.task.creator._id.toString() === current_user._id.toString()){
+			if (data.task.status === 'new' && data.is_assignee === true) {
+				$('.btncontainer .start').addClass('active');
+			}
+			else if (data.task.status === 'started' && data.is_assignee === true){
+				$('.btncontainer .finish').addClass('active');
+			}
+			else if (data.task.status === 'finished' && data.is_assignee === true){
+				$('.btncontainer .finished').addClass('active');
+			}
+			else if (data.task.status === 'finished' && data.task.creator._id.toString() === current_user._id.toString()){
+				$('.btncontainer .accept').addClass('active');
+				$('.btncontainer .reject').addClass('active');
+			}
+			else if (data.task.status === 'rejected' && data.is.assignee){
+				$('.btncontainer .rejected').addClass('active');
+			}
+		}
+	}
+	
+
 	var getSegment = function (url, index) {
    		return url.replace(/^https?:\/\//, '').split('/')[index];
 	};
@@ -45,6 +72,8 @@ $(document).ready(function(){
 			current_user = res.current_user;
 			taskForCommentData = res.task;
 			showTaskOnFeed(res);
+			modifyCssByData(res);
+
 		}
 	});
 
@@ -60,7 +89,7 @@ $('#sComment').click(function(){
 			},
 			created_ts: "just now"
 		};
-		//showCommentOnFeed(new_comm);
+
 		var item = {
 			comments: [new_comm]
 		};
@@ -73,7 +102,7 @@ $('#sComment').click(function(){
 			datatype: 'json',
 			url: '/api/newComment',
 			success:function(res){
-				//
+			
 			}
 		});
 	});

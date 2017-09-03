@@ -12,88 +12,70 @@
     <script type="text/javascript" src="/css/bullet.js"></script>
 </head>
 <script id="hbdemo" type="text/x-handlebars-template">
-{{#each task}}
-<div class="ui cards">
-  <div class="card">
-    <div class="content">
-      <img class="right floated mini ui image" src="/images/avatar/large/elliot.jpg">
-      <div class="header">
-        <a href="/task/{{_id}}">{{title}}</a>
-      </div>
-      <div class="meta">
-        by {{creator.first_name}} {{creator.last_name}} at {{created_ts}}
-      </div><br/>
-      <div class="assignees">
-       Assigned to: {{#each assignees}} {{this.first_name}} {{this.last_name}}{{/each}}
-      </div>
-      <div class="status">
-       Ticket Status: {{status}}
-      </div>
-      <div class="modified">
-       Ticket Status: {{updated_ts}}
-      </div>
-      <div class="ui divider">
-      </div>
-      <div class="description">{{body}}
+  {{#each task}}
+  <div class="ui three celled grid">
+    <div class="one wide column">
+      <div class="ui checkbox">
+        <input type="checkbox" name="example">
+          <label><i class="ui pink circle warning icon"></i></label>
       </div>
     </div>
-    <div class="extra content">
-      <div class="ui two buttons">
-        <div class="ui basic green button">Done</div>
-        <div class="ui basic red button">Delete</div>
+    <div class="fourteen wide column"><a href="/task/{{_id}}">{{title}}</a></div>
+    <div class="one wide column">
+      <div class="commentNum">  
       </div>
+        <i class="ui transparent comment icon"></i>
     </div>
-  </div>
-</div>
-{{/each}}
+    </div> 
+  {{/each}}
 </script>
 <body>
     <div class="ui container">
       <div class="ui segment">
+        <div class="header">
+              <h1 class="ui center aligned large header">Bullet</h1>
+              <h2 class="ui center aligned medium header">Ticket System</h2>
+              <h3 class="ui center aligned small header">Current tasks:</h3>
+        </div>
         <div class="ui inverted page dimmer active">
           <div class="ui massive text loader">Please Wait...</div>
         </div>   
 
       </div>
-      <div id="logOut" class="ui small header">Logout</div>
-        <div class="header">
-            <h1>Bullet</h1>
-            <h2>Ticket System</h2>
-            <h3>Current tasks:</h3>
-        </div>
-        <div class="ui items tasklist">
-          <div class="ui table header" id="js-issues-toolbar">
-            <div class="ui float left checkbox allsel">
-              <input type="checkbox" name="selall">
-              <label class="float left"></label>
+        <div id="logOut" class="ui small header">Logout</div>
+          <div class="ui items tasklist">
+            <div class="ui table header" id="js-issues-toolbar">
+              <div class="ui float left checkbox allsel">
+                <input type="checkbox" name="selall">
+                <label class="float left"></label>
+              </div>
+              <div class="table-list-counter">
+                <i class="warning circle icon"></i><span>1 Open</span>  
+                <i class="rocket icon"></i><span>9 Ongoing</span>
+                <i class="flag checkered icon"></i><span>19 Closed</span>
+              </div>
+              <div class="table-list-filters">
+                <span class="filters">Creator</span>
+                <span class="filters">Assignee</span>
+                <span class="filters">Created</span>
+                <span class="filters">Modified</span>
+              </div>   
+          </div>
+            <div class="ui top attached tabular menu">
+              <a class="item active" data-tab="first">Assigned to me</a>
+              <a class="item" data-tab="second">Created by me</a>
             </div>
-            <div class="table-list-counter">
-              <i class="warning circle icon"></i><span>1 Open</span>  
-              <i class="rocket icon"></i><span>9 Ongoing</span>
-              <i class="flag checkered icon"></i><span>19 Closed</span>
+            <div class="ui bottom attached tab segment active" data-tab="first">
+                <div class="list_cont"></div>
             </div>
-            <div class="table-list-filters">
-              <span class="filters">Creator</span>
-              <span class="filters">Assignee</span>
-              <span class="filters">Created</span>
-              <span class="filters">Modified</span>
-            </div>   
-        </div>
-          <div class="ui top attached tabular menu">
-            <a class="item active" data-tab="first">Assigned to me</a>
-            <a class="item" data-tab="second">Created by me</a>
+            <div class="ui bottom attached tab segment" data-tab="second">
+                <div class="list_cont"></div>
+            </div>
+          </div> 
+              <div class="ui right floated button blue" id="newTask">
+                  <a href="/newTask">Create new ticket</a>
+              </div>  
           </div>
-          <div class="ui bottom attached tab segment active" data-tab="first">
-              
-          </div>
-          <div class="ui bottom attached tab segment" data-tab="second">
-              
-          </div>
-        </div> 
-            <div class="ui right floated button blue" id="newTask">
-                <a href="/newTask">Create new ticket</a>
-            </div>  
-        </div>
 </body>
 
 </html>

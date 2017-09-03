@@ -1,0 +1,36 @@
+<script id="hbdemo" type="text/x-handlebars-template">
+{{#each task}}
+<div class="ui cards">
+  <div class="card">
+    <div class="content">
+      <img class="right floated mini ui image" src="/images/avatar/large/elliot.jpg">
+      <div class="header">
+        <a href="/task/{{_id}}">{{title}}</a>
+      </div>
+      <div class="meta">
+        by {{creator.first_name}} {{creator.last_name}} at {{created_ts}}
+      </div><br/>
+      <div class="assignees">
+       Assigned to: {{#each assignees}} {{this.first_name}} {{this.last_name}}{{/each}}
+      </div>
+      <div class="status">
+       Ticket Status: {{status}}
+      </div>
+      <div class="modified">
+       Ticket Status: {{updated_ts}}
+      </div>
+      <div class="ui divider">
+      </div>
+      <div class="description">{{body}}
+      </div>
+    </div>
+    <div class="extra content">
+      <div class="ui two buttons">
+        <div class="ui basic green button">Done</div>
+        <div class="ui basic red button">Delete</div>
+      </div>
+    </div>
+  </div>
+</div>
+{{/each}}
+</script>

@@ -19,39 +19,54 @@
       <p></p>
   </div>
   <div class="ui container">
-      <div class="ui large header">Bullet Ticket System</div>
-      <div class="ui medium header">Single Task Mode</div>
-      <div class="ui container tfeed">
-        <div class="ui large header" id="task_title">
-          
-        </div>
-        <div class="ui small header meta" id="task_id">
-          
-        </div>
-        <div class="extra">
-          <div class="ui label yellow not_started" id="task_status">
-            <i class="info circle icon"></i>
-          </div>
-          <div class="creator">
-            <span id="task_creator"></span>
-            <div class="create_info">created this ticket 1h ago - 6 Comments
+    <div class="taskheading">
+      <div class="ui medium header">Single Task View</div>
+        <div class="ui container tfeed">
+          <div class="ui large header" id="task_title"></div>
+          <p id="task_id"></p>
+          <div class="extra">
+            <div class="ui label yellow not_started" id="task_status">
+              <i class="info circle icon"></i>
+            </div>
+            <div class="creator">
+              <span id="task_creator"></span>
+                <div class="create_info">created this ticket 1h ago - 6 Comments</div>
             </div>
           </div>
         </div>
         <div class="ui divider"></div>
-        <div id="comments_cont"></div>
       </div>
-      <div class="newComment">
-        <div class="ui form">
-          <div class="field">
-            <label>Add a comment...</label>
-            <textarea class="c_body tinymce"></textarea>
+
+        
+        <div id="comments_cont">
+          <div class="ui instant move reveal">
+            <div class="visible content">
+              <div class="ui left sidebar"></div>
+            </div>
+            <div class="hidden content">
+              This works
+            </div>
+          </div>         
+        </div>
+        <div class="newComment">
+          <div class="ui form">
+            <div class="field">
+              <label>Add a comment...</label>
+              <textarea class="c_body tinymce"></textarea>
+            </div>
           </div>
         </div>
+        <div id="sComment" class="ui large purple button">Submit</div>
+        <div class="ui right floated buttons btncontainer">
+          <div class="ui button start">Start</div>
+          <div class="ui button finish">Finish</div>
+          <div class="ui button finished">Unfinish</div>
+          <div class="ui red button reject">Reject</div>
+          <div class="ui button rejected">Restart</div>
+          <div class="ui green button accept">Accept</div>
+        </div>
       </div>
-    <div id="sComment" class="ui large purple button">Submit</div>
-  </div>
-
+      
 
   <script id="assigndropdown" type="text/x-handlebars-template">
     {{#each objects}}

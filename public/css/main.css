@@ -9,7 +9,10 @@ span.filters{padding-right:55px;}
 #logOut{cursor:pointer;}
 #newTask a {color:white;}
 .card {margin:0 auto;width:900px !important;}
-
-
+.list_cont .fourteen.wide{;}
+.list_cont .three.wide{;}
+.list_cont .two.wide{;}
+.list_cont .one.wide{;}
+.tab.segment.active{min-height:500px;}
 
 

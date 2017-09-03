@@ -54,7 +54,7 @@ $('.container .item').tab({
 		console.log('templating...');
 		var html = templateScript(data);
 
-		var selector = 'div.tab.segment[data-tab="' + tab_name + '"]';
+		var selector = 'div.tab.segment[data-tab="' + tab_name + '"] .list_cont';
 		if (tab_name == 'first') {
 			assignedIdx++;
 		}

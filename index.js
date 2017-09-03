@@ -53,6 +53,22 @@ app.use(passport.session());
 app.listen(3000, function (){
 	console.log('Listening on port 3000');
 });
+
+function checkAssigneePermission(logged_user,task_assignees){
+	var i;
+	var uid_string = logged_user._id.toString();
+	var assigned_string = task_assignees[0]._id.toString();
+	var match = null;
+	for (i=0;i < task_assignees.length; i++){
+		if (uid_string == assigned_string){
+			match = true;
+			return match;
+		}
+		match = false;
+	}
+		return match;
+}
+
 app.get('/', function(req,res){
 	res.redirect('/tasks');
 });
@@ -79,16 +95,15 @@ app.post('/loginauth', passport.authenticate('local', {
 app.get('/api/getAssignedData', function(req,res){
 	console.log(req.user);
 	if (!req.isAuthenticated()){
-		// res.redirect('/login');
 		res.json({error: "not_logged_in"});
-	} else {
+	} 
+	else {
 		Task.
-			find({ 'assignees': req.user._id }).
+			find({'assignees': req.user._id }).
 			populate('creator').
 			populate('assignees').
 			exec(function(err, story){
 				if (!err){
-					console.log({task: story});
 					res.json({task: story});
 				}
 				else {
@@ -96,7 +111,7 @@ app.get('/api/getAssignedData', function(req,res){
 				}
 			});
 
-		}
+	}
 });
 app.get('/api/getCreatedData', function(req,res){
 	if (!req.isAuthenticated()){
@@ -127,7 +142,6 @@ app.get('/api/getUsers', function(req,res){
 			find({}).
 			exec(function(err, story){
 				if (!err){
-					console.log(story);
 					res.json(story);
 				}
 				else {
@@ -209,11 +223,26 @@ app.get('/api/task/:id', function(req, res){
 		})
 		.exec(function(err, story){
 			if (!err){
-				var data = {
-					task: story,
-					current_user: req.user,
-				};
-				res.json(data);
+				var isMatched = checkAssigneePermission(req.user, story.assignees);
+				if (isMatched !== true){
+					var regData = {
+						task: story,
+						current_user: req.user,
+						is_assignee: false
+					};
+					res.json(regData);
+				}
+				else if (isMatched === true){
+					var data = {
+					 task: story,
+					 current_user: req.user,
+					 is_assignee: true
+
+					};
+					res.json(data);
+				}
+
+				
 			}
 			else {
 				console.log('err occured when tried to get story from db');
@@ -244,7 +273,7 @@ app.post('/api/newComment', function(req, res){
 							exec(function(err, result){
 								if (err) throw err;
 								else {
-									console.log(result);
+									
 									var cdata = {
 										comment: result,
 										current_user: req.user
