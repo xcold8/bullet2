@@ -30,24 +30,15 @@
             </div>
             <div class="creator">
               <span id="task_creator"></span>
-                <div class="create_info">created this ticket 1h ago - 6 Comments</div>
+                <div class="create_info">created this ticket 1h ago - {{comments_num}} Comments</div>
             </div>
           </div>
         </div>
         <div class="ui divider"></div>
       </div>
+        <div id="comments_cont"></div>
 
-        
-        <div id="comments_cont">
-          <div class="ui instant move reveal">
-            <div class="visible content">
-              <div class="ui left sidebar"></div>
-            </div>
-            <div class="hidden content">
-              This works
-            </div>
-          </div>         
-        </div>
+
         <div class="newComment">
           <div class="ui form">
             <div class="field">
@@ -58,12 +49,29 @@
         </div>
         <div id="sComment" class="ui large purple button">Submit</div>
         <div class="ui right floated buttons btncontainer">
-          <div class="ui button start">Start</div>
-          <div class="ui button finish">Finish</div>
-          <div class="ui button finished">Unfinish</div>
-          <div class="ui red button reject">Reject</div>
-          <div class="ui button rejected">Restart</div>
-          <div class="ui green button accept">Accept</div>
+          <div class="newt">
+            <div class="ui button start assignee">Start</div>
+            <div class="ui yellow label creator">Unstarted</div>
+          </div>
+          <div class="startedt">
+            <div class="ui button assignee">Finish</div>
+            <div class="ui blue label creator">Started</div>
+          </div>
+          <div class="finishedt">
+            <div class="ui button assignee">Unfinish</div>
+            <div class="arbuttons creator">
+              <div class="ui teal label">Finished</div>  
+              <div class="ui green button accept">Accept</div>
+              <div class="ui red button reject">Reject</div>
+            </div>
+          </div>
+          <div class="rejectedt">
+            <div class="ui orange label creator">Rejected</div>
+            <div class="ui button assignee">Restart</div>
+          </div>
+          <div class="acceptedt">
+            <div class="ui green label">Accepted</div>
+          </div>
         </div>
       </div>
       

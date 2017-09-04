@@ -26,16 +26,25 @@ div.small.header.meta {color: #a3aab1;display:inline-block !important;overflow:h
 .textarea_body .actionBtns{position:relative;top:30px;}
 .textarea_body .actionBtns .assigneeBtn {position:relative;top:38px;right:18px;}
 .textarea_body .actionBtns .creatorBtn {position:relative;top:38px;right:18px;}
-.btncontainer .start{display:none;}
-.btncontainer .start.active{display:block;}
-.btncontainer .reject{display:none;}
-.btncontainer .accept{display:none;}
-.btncontainer .reject.active{display:block;}
-.btncontainer .accept.active{display:block;}
-.btncontainer .finished{display:none;}
-.btncontainer .rejected{display:none;}
-.btncontainer .finished.active{display:block;}
-.btncontainer .rejected.active{display:block;}
-.btncontainer .finish{display:none;}
-.btncontainer .finish.active{display:block;}
+.btncontainer .newt .creator{display:none;}
+.btncontainer .newt .assignee{display:none;}
+.btncontainer .newt .creator.active{display:block;}
+.btncontainer .newt .assignee.active{display:block;}
 
+.btncontainer .startedt .creator{display:none;}
+.btncontainer .startedt .assignee{display:none;}
+.btncontainer .startedt .creator.active{display:block;}
+.btncontainer .startedt .assignee.active{display:block;}
+
+.btncontainer .finishedt .creator{display:none;}
+.btncontainer .finishedt .assignee{display:none;}
+.btncontainer .finishedt .creator.active{display:block;}
+.btncontainer .finishedt .assignee.active{display:block;}
+
+.btncontainer .acceptedt div.label{display:none;}
+.btncontainer .acceptedt div.label.active{display:block;}
+
+.btncontainer .rejectedt .creator{display:none;}
+.btncontainer .rejectedt .assignee{display:none;}
+.btncontainer .rejectedt .creator.active{display:block;}
+.btncontainer .rejectedt .assignee.active{display:block;}

@@ -5,29 +5,33 @@ $(document).ready(function(){
 
 	function modifyCssByData(data){
 		$('.btncontainer div.button').removeClass('active');
-		if (!data.is_assignee && data.task.creator._id.toString() != current_user._id.toString()){
+		if (!data.is_assignee && !data.is_creator){
 				return;
 		}
-		else if (data.is_assignee || data.task.creator._id.toString() === current_user._id.toString()){
-			if (data.task.status === 'new' && data.is_assignee === true) {
-				$('.btncontainer .start').addClass('active');
+		else if (data.is_assignee || data.is_creator){
+			if (data.task.status === 'new' && data.is_assignee) {
+				return '.btncontainer .newt .assignee';
 			}
-			else if (data.task.status === 'started' && data.is_assignee === true){
-				$('.btncontainer .finish').addClass('active');
+			else if (data.task.status === 'started' && data.is_assignee){
+				return '.btncontainer .startedt .assignee';
 			}
-			else if (data.task.status === 'finished' && data.is_assignee === true){
-				$('.btncontainer .finished').addClass('active');
+			else if (data.task.status === 'finished' && data.is_assignee){
+				return '.btncontainer .finishedt .assignee';
 			}
-			else if (data.task.status === 'finished' && data.task.creator._id.toString() === current_user._id.toString()){
-				$('.btncontainer .accept').addClass('active');
-				$('.btncontainer .reject').addClass('active');
+			else if (data.task.status === 'finished' && data.is_creator){
+				return '.btncontainer .finishedt .creator';
 			}
-			else if (data.task.status === 'rejected' && data.is.assignee){
-				$('.btncontainer .rejected').addClass('active');
+			else if (data.task.status === 'rejected' && data.is_assignee){
+				return '.btncontainer .rejectedt .assignee';
+			}
+			else if (data.task.status === 'rejected' && data.is_creator){
+				return '.btncontainer .rejectedt .creator';
+			}
+			else if (data.task.status ==='accepted' && data.is_assignee || data.is_creator){
+				return '.btncontainer .acceptedt div.label';
 			}
 		}
 	}
-	
 
 	var getSegment = function (url, index) {
    		return url.replace(/^https?:\/\//, '').split('/')[index];
@@ -72,7 +76,10 @@ $(document).ready(function(){
 			current_user = res.current_user;
 			taskForCommentData = res.task;
 			showTaskOnFeed(res);
-			modifyCssByData(res);
+			var button_selector = modifyCssByData(res);
+			console.log(button_selector);
+			$(button_selector).addClass('active');
+
 
 		}
 	});

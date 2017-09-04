@@ -54,19 +54,32 @@ app.listen(3000, function (){
 	console.log('Listening on port 3000');
 });
 
-function checkAssigneePermission(logged_user,task_assignees){
-	var i;
-	var uid_string = logged_user._id.toString();
-	var assigned_string = task_assignees[0]._id.toString();
-	var match = null;
-	for (i=0;i < task_assignees.length; i++){
-		if (uid_string == assigned_string){
-			match = true;
-			return match;
-		}
-		match = false;
+function checkPermission(access_level,logged_user,task_assignees){
+	if (access_level === 'assignee'){
+		var i;
+		var uid_string = logged_user._id.toString();
+		var assigned_string = task_assignees[0]._id.toString();
+		for (i=0;i < task_assignees.length; i++){
+			if (uid_string == assigned_string){
+				return true;
+			}
+				return false;
+			}
+		return false;
+	} 
+	else if (access_level === 'creator') {
+		var k;
+		var c_uid_string = logged_user._id.toString();
+		var creator_string = task_assignees[0]._id;
+		for (k=0;k < task_assignees.length; k++){
+			if (c_uid_string == creator_string){
+				return true;
+			}
+				return false;
+			}
+			return false;
 	}
-		return match;
+
 }
 
 app.get('/', function(req,res){
@@ -223,26 +236,16 @@ app.get('/api/task/:id', function(req, res){
 		})
 		.exec(function(err, story){
 			if (!err){
-				var isMatched = checkAssigneePermission(req.user, story.assignees);
-				if (isMatched !== true){
-					var regData = {
+				var isMatched = checkPermission('assignee' ,req.user, story.assignees);
+				var isCreator = checkPermission('creator',req.user, [{_id: story.creator._id.toString()}]);
+					var data = {
 						task: story,
 						current_user: req.user,
-						is_assignee: false
-					};
-					res.json(regData);
-				}
-				else if (isMatched === true){
-					var data = {
-					 task: story,
-					 current_user: req.user,
-					 is_assignee: true
-
+						is_assignee: isMatched,
+						is_creator: isCreator
 					};
 					res.json(data);
-				}
-
-				
+		
 			}
 			else {
 				console.log('err occured when tried to get story from db');
