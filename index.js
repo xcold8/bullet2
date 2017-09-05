@@ -86,8 +86,11 @@ app.get('/', function(req,res){
 	res.redirect('/tasks');
 });
 app.get('/login', function(req,res){
-	res.sendFile(__dirname +'/public/login.html');
-
+	if (req.isAuthenticated()){
+		res.redirect('/tasks');
+	} else {
+		res.sendFile(__dirname +'/public/login.html');
+	}
 });
 app.get('/tasks',function (req, res){
 		if (!req.isAuthenticated()){

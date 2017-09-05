@@ -12,22 +12,22 @@ $(document).ready(function(){
 			if (data.task.status === 'new' && data.is_assignee) {
 				return '.btncontainer .newt .assignee';
 			}
-			else if (data.task.status === 'started' && data.is_assignee){
+			if (data.task.status === 'started' && data.is_assignee){
 				return '.btncontainer .startedt .assignee';
 			}
-			else if (data.task.status === 'finished' && data.is_assignee){
+			if (data.task.status === 'finished' && data.is_assignee){
 				return '.btncontainer .finishedt .assignee';
 			}
-			else if (data.task.status === 'finished' && data.is_creator){
+			if (data.task.status === 'finished' && data.is_creator){
 				return '.btncontainer .finishedt .creator';
 			}
-			else if (data.task.status === 'rejected' && data.is_assignee){
+			if (data.task.status === 'rejected' && data.is_assignee){
 				return '.btncontainer .rejectedt .assignee';
 			}
-			else if (data.task.status === 'rejected' && data.is_creator){
+			if (data.task.status === 'rejected' && data.is_creator){
 				return '.btncontainer .rejectedt .creator';
 			}
-			else if (data.task.status ==='accepted' && data.is_assignee || data.is_creator){
+			if (data.task.status ==='accepted' && data.is_assignee || data.is_creator){
 				return '.btncontainer .acceptedt div.label';
 			}
 		}
