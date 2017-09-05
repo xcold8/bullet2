@@ -30,7 +30,7 @@
             </div>
             <div class="creator">
               <span id="task_creator"></span>
-                <div class="create_info">created this ticket 1h ago - {{comments_num}} Comments</div>
+                <div class="create_info">created this ticket - <span id="com_num">Comments</span></div>
             </div>
           </div>
         </div>
@@ -86,7 +86,7 @@
     {{#each comments}}
     <div class="ui attached teal message user_action">
       <div class="ui tiny header">
-        {{creator.first_name}} {{creator.last_name}} commented 20m ago
+        {{creator.first_name}} {{creator.last_name}} commented on {{created_ts}}
       </div>
     </div>
     <div class="ui attached fluid message textarea_body">
@@ -100,7 +100,7 @@
           <div class="summary">
             {{creator.first_name}} {{creator.last_name}} self assigned this
             <div class="date">
-              3 days ago
+              at {{created_ts}}
             </div>
           </div>
         </div>

@@ -1,4 +1,10 @@
 $(document).ready(function(){
+	$.getJSON('/api/getDash', function (res){
+		$('#open').text(res.dashboard.open+' New');
+		$('#accepted').text(res.dashboard.accepted+' Accepted');
+		$('#rejected').text(res.dashboard.rejected+' Rejected');
+		$('#ongoing').text(res.dashboard.ongoing+' Ongoing');
+	});
 
 	function toggle(source) {
   		checkboxes = document.getElementsByName('example');
@@ -68,6 +74,7 @@ $('.container .item').tab({
 	}
 	// simulate click on first tab
 	$('.item[data-tab="first"]').click();
+	// checkbox selectors
 	$('.allsel').click(function(){
 		$('.ui.checkbox').checkbox('check');
 	});

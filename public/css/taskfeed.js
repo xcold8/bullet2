@@ -54,6 +54,7 @@ $(document).ready(function(){
 		$('#task_id').text('#'+data.task._id || "Unknown");
 		$('#task_status').text(data.task.status || "Unknown");
 		$('#task_creator').text(data.task.creator.first_name + " " + data.task.creator.last_name);
+		$('#com_num').text(data.task.comments.length +" "+ 'Comments');
 
 		// repeat for each comment and render as one HTML
 		render_comments(data.task);

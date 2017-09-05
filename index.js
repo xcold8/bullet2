@@ -146,6 +146,45 @@ app.get('/api/getCreatedData', function(req,res){
 
 		}
 });
+app.get('/api/getDash', function(req,res){
+	if (!req.isAuthenticated()){
+		res.redirect('login');
+	}
+	else {
+		var dashboard = ({
+		open: 0,
+		rejected:0,
+		accepted:0,
+		ongoing: 0
+	});
+		Task.
+			find({'assignees':[{'_id': req.user._id}]}).
+			find({'status':'new'}).
+			exec(function(err, story){
+				if (err) throw err;
+				else {
+					dashboard.open = story.length;
+					
+				}
+			});
+			Task.find({'assignees':[{'_id': req.user._id}], 'status':'started'}).
+			exec(function(err, story){
+				dashboard.ongoing = story.length;	
+			});
+			Task.find({'assignees':[{'_id': req.user._id}], 'status':'rejected'}).
+			exec(function(err, story){
+				dashboard.rejected = story.length;	
+			});
+			Task.find({'assignees':[{'_id': req.user._id}], 'status':'accepted'}).
+			exec(function(err, story){
+				dashboard.accepted = story.length;	
+				res.json({dashboard: dashboard});
+			});		
+	}
+
+});
+
+
 app.get('/api/getUsers', function(req,res){
 	if (!req.isAuthenticated()){
 		res.redirect('/login');
