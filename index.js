@@ -288,18 +288,27 @@ app.get('/api/task/:id', function(req, res){
 				model: "User"
 			}
 		})
+		.lean() // gal 
 		.exec(function(err, story){
 			if (!err){
-					story.comments[0].created_ago = "4 mins ago";
+					//story.comments[0].created_ago = "4 mins ago";
 					var isMatched = checkPermission('assignee' ,req.user, story.assignees);
 					var isCreator = checkPermission('creator',req.user, [{_id: story.creator._id.toString()}]);
 					var data = {
-					task: story,
+						task: story,
 						current_user: req.user,
 						is_assignee: isMatched,
 						is_creator: isCreator,
 						created_ago: moment(story.created_ts).startOf('day').fromNow()
 					};
+
+					// gal
+					for (var i=0; i<data.task.comments.length; i++) {
+						var comment = data.task.comments[i];
+						comment.created_ago = moment(comment.created_ts).startOf('day').fromNow();
+					}
+					// gal
+
 					res.json(data);
 			}
 			else {
