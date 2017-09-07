@@ -59,9 +59,8 @@ function checkPermission(access_level,logged_user,task_assignees){
 	if (access_level === 'assignee'){
 		var i;
 		var uid_string = logged_user._id.toString();
-		var assigned_string = task_assignees[0]._id.toString();
 		for (i=0;i < task_assignees.length; i++){
-			if (uid_string == assigned_string){
+			if (uid_string == task_assignees[i]._id){
 				return true;
 			}
 				return false;
