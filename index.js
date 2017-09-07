@@ -358,40 +358,68 @@ app.post('/api/task/:id/action', function(req, res){
 		}).
 		lean().
 		exec(function(err, task){
-			console.log([{_id: task.creator._id.toString()}]);
 			var isCreator = checkPermission('creator', req.user, [{_id: task.creator._id.toString()}]);
-			var isAssignee = checkPermission('assignee', req.user, req.assignees);
+			var isAssignee = checkPermission('assignee', req.user, task.assignees);
 			var action = req.body.action;
 			if (!isAssignee && !isCreator){
 				res.json({error: "You are not elgible to make changes to this task"});
 			}
-			else if (action == 'start' && isAssignee && task.status == 'new'){
+			if (isAssignee || isCreator) {
+				if (action === 'start' && isAssignee){
+					console.log('2 started');
 					task.status = 'started';
-			}
-			else if (action == 'finish' && isAssignee && task.status == 'new'){
-				task.status = 'finish';
-			}
-			else if (action == 'unfinish' && isAssignee && task.status == "finished" || task.status == "rejected"){
-				task.status = 'started';
-			}
-			else if (action == 'accept' && isCreator && task.status == 'finished'){
-				task.status = 'accepted';
-			}
-			else if (action == 'reject' && isCreator && task.status == 'finished'){
-				task.status = 'rejected';
-			}
+				}
+				else {
+					if (action === 'start' && !isAssignee){
+						console.log('Error: you are not assigned for this task, therefore status will not change to: started');
+					}
+				}
+				if (action === 'finish' && isAssignee){
+					console.log('3 finished');
+					task.status = 'finished';
+				}
+				else {
+					if (action === 'finished' && !isAssignee){
+						console.log('Error: you are not assigned for this task, therefore status will not change to: finished');
+					}
+				}
+				if (action === 'unfinish' && isAssignee){
+					console.log('4 unfinish');
+					task.status = 'started';
+				}
+				else {
+					if (action === 'unfinish' && !isAssignee){
+						console.log('Error: you are not assigned for this task, therefore status will not change to: unfinish');
+					}
+				}
+				if (action === 'accept' && isCreator){
+					console.log('5 accepted');
+					task.status = 'accepted';
+				}
+				else {
+					if (action === 'accept' && !isCreator){
+						console.log('Error: you are not the creator for this task, therefore status will not change to: accepted');
+					}
+				}
+				if (action === 'reject' && isCreator){
+					console.log('6 rejected');
+					task.status = 'rejected';
+				}
+				else {
+					if (action === 'reject' && !isCreator)
+					console.log('Error: you are not assigned for this task, therefore status will not change to: rejected ');
+				}
+			} 
 			else {
-				console.log('error occured');
+				console.log('error occured, printing related info');
 				console.log({
+					current_task_status: task.status,
+					action_requested: action,
 					is_creator: isCreator,
-					is_assignee: isAssignee,
-					task_status: task.status,
-					action_type: action
+					is_assignee: isAssignee
 				});
 			}
-			console.log(task);
 			res.json(task);
 		});
 	}
-
 });
