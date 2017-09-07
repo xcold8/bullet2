@@ -21,8 +21,12 @@
     "cookie-parser": "^1.4.3",
     "express": "^4.15.3",
     "handlebars": "^4.0.10",
+    "moment": "^2.18.1",
     "passport": "^0.3.2",
     "passport-local": "^1.0.0",
     "path": "^0.12.7"
+  },
+  "devDependencies": {
+    "momentjs": "^2.0.0"
   }
 }

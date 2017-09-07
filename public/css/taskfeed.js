@@ -75,11 +75,11 @@ $(document).ready(function(){
 		url: '/api/task/'+getSegment(window.location.href, 2),
 		success: function(res){
 			current_user = res.current_user;
-			taskForCommentData = res.task;
 			showTaskOnFeed(res);
 			var button_selector = modifyCssByData(res);
 			console.log(button_selector);
 			$(button_selector).addClass('active');
+
 
 
 		}

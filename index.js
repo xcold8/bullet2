@@ -1,4 +1,5 @@
 var path = require('path');
+var moment = require('moment');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var jsonParser = bodyParser.json();
@@ -81,7 +82,20 @@ function checkPermission(access_level,logged_user,task_assignees){
 	}
 
 }
-
+var newItemArr = [];
+function durCalc(index ,data, callback){
+	var item = new Comm();
+	if (index < data.length){
+		item = data[index];
+		item.created_ago = moment(item.created_ts).startOf('day').fromNow();
+		newItemArr.push(item);
+		console.log(newItemArr);
+		index++;
+		durCalc(index, data, callback);
+	} else {
+		callback(newItemArr);
+	}
+}
 app.get('/', function(req,res){
 	res.redirect('/tasks');
 });
@@ -109,7 +123,6 @@ app.post('/loginauth', passport.authenticate('local', {
     //res.redirect('/'+req.user.name+'/'+req.user.lastname);
 });
 app.get('/api/getAssignedData', function(req,res){
-	console.log(req.user);
 	if (!req.isAuthenticated()){
 		res.json({error: "not_logged_in"});
 	} 
@@ -134,12 +147,11 @@ app.get('/api/getCreatedData', function(req,res){
 		res.redirect('/login');
 	} else {
 		Task.
-			find({ 'creator': req.user._id }).
+			find({'creator': req.user._id }).
 			populate('creator').
 			populate('assignees').
 			exec(function(err, story){
 				if (!err){
-					console.log({task: story});
 					res.json({task: story});
 				}
 				else {
@@ -278,16 +290,17 @@ app.get('/api/task/:id', function(req, res){
 		})
 		.exec(function(err, story){
 			if (!err){
-				var isMatched = checkPermission('assignee' ,req.user, story.assignees);
-				var isCreator = checkPermission('creator',req.user, [{_id: story.creator._id.toString()}]);
+					story.comments[0].created_ago = "4 mins ago";
+					var isMatched = checkPermission('assignee' ,req.user, story.assignees);
+					var isCreator = checkPermission('creator',req.user, [{_id: story.creator._id.toString()}]);
 					var data = {
-						task: story,
+					task: story,
 						current_user: req.user,
 						is_assignee: isMatched,
-						is_creator: isCreator
+						is_creator: isCreator,
+						created_ago: moment(story.created_ts).startOf('day').fromNow()
 					};
 					res.json(data);
-		
 			}
 			else {
 				console.log('err occured when tried to get story from db');
