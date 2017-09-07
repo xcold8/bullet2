@@ -83,19 +83,7 @@ function checkPermission(access_level,logged_user,task_assignees){
 
 }
 var newItemArr = [];
-function durCalc(index ,data, callback){
-	var item = new Comm();
-	if (index < data.length){
-		item = data[index];
-		item.created_ago = moment(item.created_ts).startOf('day').fromNow();
-		newItemArr.push(item);
-		console.log(newItemArr);
-		index++;
-		durCalc(index, data, callback);
-	} else {
-		callback(newItemArr);
-	}
-}
+
 app.get('/', function(req,res){
 	res.redirect('/tasks');
 });
@@ -288,10 +276,9 @@ app.get('/api/task/:id', function(req, res){
 				model: "User"
 			}
 		})
-		.lean() // gal 
+		.lean() 
 		.exec(function(err, story){
 			if (!err){
-					//story.comments[0].created_ago = "4 mins ago";
 					var isMatched = checkPermission('assignee' ,req.user, story.assignees);
 					var isCreator = checkPermission('creator',req.user, [{_id: story.creator._id.toString()}]);
 					var data = {
@@ -302,12 +289,12 @@ app.get('/api/task/:id', function(req, res){
 						created_ago: moment(story.created_ts).startOf('day').fromNow()
 					};
 
-					// gal
+					
 					for (var i=0; i<data.task.comments.length; i++) {
 						var comment = data.task.comments[i];
 						comment.created_ago = moment(comment.created_ts).startOf('day').fromNow();
 					}
-					// gal
+				
 
 					res.json(data);
 			}
@@ -354,4 +341,58 @@ app.post('/api/newComment', function(req, res){
 			});
 		}
 	});
+});
+app.post('/api/task/:id/action', function(req, res){
+	if (!req.isAuthenticated()){
+		res.redirect('/login');
+	}
+	else {
+		Task.findById(req.params.id).
+		populate('creator').
+		populate('assignees').
+		populate({
+			path: "comments",
+			populate: {
+				path: "creator",
+				model: "User"
+			}
+		}).
+		lean().
+		exec(function(err, task){
+			console.log([{_id: task.creator._id.toString()}]);
+			var isCreator = checkPermission('creator', req.user, [{_id: task.creator._id.toString()}]);
+			var isAssignee = checkPermission('assignee', req.user, req.assignees);
+			var action = req.body.action;
+			if (!isAssignee && !isCreator){
+				res.json({error: "You are not elgible to make changes to this task"});
+			}
+			else if (action == 'start' && isAssignee && task.status == 'new'){
+					task.status = 'started';
+			}
+			else if (action == 'finish' && isAssignee && task.status == 'new'){
+				task.status = 'finish';
+			}
+			else if (action == 'unfinish' && isAssignee && task.status == "finished" || task.status == "rejected"){
+				task.status = 'started';
+			}
+			else if (action == 'accept' && isCreator && task.status == 'finished'){
+				task.status = 'accepted';
+			}
+			else if (action == 'reject' && isCreator && task.status == 'finished'){
+				task.status = 'rejected';
+			}
+			else {
+				console.log('error occured');
+				console.log({
+					is_creator: isCreator,
+					is_assignee: isAssignee,
+					task_status: task.status,
+					action_type: action
+				});
+			}
+			console.log(task);
+			res.json(task);
+		});
+	}
+
 });
