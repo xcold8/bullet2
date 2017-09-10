@@ -432,22 +432,47 @@ app.post('/api/task/:id/action', function(req, res){
 				}
 				if (action === 'restart' && isAssignee){
 					console.log('7 restart');
-					task.status = 'started';
-					Task.findOneAndUpdate(req.params.id, task, {upsert: true}, function (err, updated_t_db){
-						if (err) throw err;
-						return res.status(200).json(updated_t_db);
+					
+
+
+					console.log("GAL start");
+					Task.findById(req.params.id, function(err, obj){
+						if (err) {
+							console.log("ERROR: " + err);
+							throw err;
+						}
+						else {
+							obj.status = "started";
+							obj.save(function(err){
+								if (err) {
+									console.log("ERROR saving");
+									throw err;
+								}
+								else {
+									console.log("Saved!");
+									return res.status(200);
+								}
+							});
+						}
 					});
+					console.log("GAL end");
+
+					// task.status = 'started';
+					// Task.findOneAndUpdate(req.params.id, task, {upse
+					// 	rt: true}, function (err, updated_t_db){
+					// 	if (err) throw err;
+					// 	return res.status(200).json(updated_t_db);
+					// });
 				}
 				else {
 					if (action === 'restart' && !isAssignee){
 						var e_item = ({
-						current_task_status: task.status,
-						action_requested: action,
-						is_creator: isCreator,
-						is_assignee: isAssignee
-				});
-				return res.json(e_item);
-
+							current_task_status: task.status,
+							action_requested: action,
+							is_creator: isCreator,
+							is_assignee: isAssignee
+						});
+						return res.json(e_item);
 					}
 				}
 			} 
