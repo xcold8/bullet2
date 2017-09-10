@@ -430,15 +430,36 @@ app.post('/api/task/:id/action', function(req, res){
 					if (action === 'reject' && !isCreator)
 					console.log('Error: you are not assigned for this task, therefore status will not change to: rejected ');
 				}
+				if (action === 'restart' && isAssignee){
+					console.log('7 restart');
+					task.status = 'started';
+					Task.findOneAndUpdate(req.params.id, task, {upsert: true}, function (err, updated_t_db){
+						if (err) throw err;
+						return res.status(200).json(updated_t_db);
+					});
+				}
+				else {
+					if (action === 'restart' && !isAssignee){
+						var e_item = ({
+						current_task_status: task.status,
+						action_requested: action,
+						is_creator: isCreator,
+						is_assignee: isAssignee
+				});
+				return res.json(e_item);
+
+					}
+				}
 			} 
 			else {
 				console.log('error occured, printing related info');
-				console.log({
+				var e_item_sec = ({
 					current_task_status: task.status,
 					action_requested: action,
 					is_creator: isCreator,
 					is_assignee: isAssignee
 				});
+				return res.json(e_item_sec);
 			}
 	
 		});
