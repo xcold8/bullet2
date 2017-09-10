@@ -33,6 +33,7 @@ $(document).ready(function(){
 		}
 	}
 
+
 	var getSegment = function (url, index) {
    		return url.replace(/^https?:\/\//, '').split('/')[index];
 	};
@@ -115,5 +116,44 @@ $('#sComment').click(function(){
 		});
 	});
 
+
+	//Actions buttons jquery onclick
+	function postActionToSrv(task_id,action_name){
+		$.post('/api/task/'+task_id+'/action/', {action: action_name}, function(res){
+	 	console.log(res);
+
+	 	});
+	}
+	$('#t_start').click(function(){
+		postActionToSrv(getSegment(window.location.href, 2), 'start');
+	});
+	$('#t_finish').click(function(){
+		postActionToSrv(getSegment(window.location.href, 2), 'finish');
+	});
+	$('#t_unfinish').click(function(){
+		postActionToSrv(getSegment(window.location.href, 2), 'unfinish');
+	});
+	$('#t_accept').click(function(){
+		postActionToSrv(getSegment(window.location.href, 2), 'accept');
+	});
+	$('#t_reject').click(function(){
+		postActionToSrv(getSegment(window.location.href, 2), 'reject');
+	});
+	$('#t_restart').click(function(){
+		postActionToSrv(getSegment(window.location.href, 2), 'restart');
+	});
+
+
+
+
+
+
+
+
+
+
+
 });
+
+
 	

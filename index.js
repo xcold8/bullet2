@@ -346,7 +346,7 @@ app.post('/api/task/:id/action', function(req, res){
 		res.redirect('/login');
 	}
 	else {
-		Task.findById(req.params.id).
+		Task.findById(req.params.id, {'_id':0}).
 		populate('creator').
 		populate('assignees').
 		populate({
@@ -365,9 +365,14 @@ app.post('/api/task/:id/action', function(req, res){
 				res.json({error: "You are not elgible to make changes to this task"});
 			}
 			if (isAssignee || isCreator) {
+				var updated_t = new Task(task);
 				if (action === 'start' && isAssignee){
 					console.log('2 started');
 					task.status = 'started';
+					Task.findOneAndUpdate(req.params.id, task, {upsert: true}, function(err, updated_t_db){
+						if (err) throw err;
+						return res.status(200).send(updated_t_db);
+					});
 				}
 				else {
 					if (action === 'start' && !isAssignee){
@@ -377,6 +382,10 @@ app.post('/api/task/:id/action', function(req, res){
 				if (action === 'finish' && isAssignee){
 					console.log('3 finished');
 					task.status = 'finished';
+					Task.findOneAndUpdate(req.params.id, task, {upsert: true}, function(err, updated_t_db){
+						if (err) throw err;
+						return res.status(200).send('successfully saved');
+					});
 				}
 				else {
 					if (action === 'finished' && !isAssignee){
@@ -386,6 +395,10 @@ app.post('/api/task/:id/action', function(req, res){
 				if (action === 'unfinish' && isAssignee){
 					console.log('4 unfinish');
 					task.status = 'started';
+					Task.findOneAndUpdate(req.params.id, task, {upsert: true}, function(err, updated_t_db){
+						if (err) throw err;
+						return res.status(200).send('successfully saved');
+					});
 				}
 				else {
 					if (action === 'unfinish' && !isAssignee){
@@ -395,6 +408,10 @@ app.post('/api/task/:id/action', function(req, res){
 				if (action === 'accept' && isCreator){
 					console.log('5 accepted');
 					task.status = 'accepted';
+					Task.findOneAndUpdate(req.params.id, task, {upsert: true}, function(err, updated_t_db){
+						if (err) return res.send(500, { error: err });
+						return res.status(200).send('successfully saved');
+					});
 				}
 				else {
 					if (action === 'accept' && !isCreator){
@@ -404,6 +421,10 @@ app.post('/api/task/:id/action', function(req, res){
 				if (action === 'reject' && isCreator){
 					console.log('6 rejected');
 					task.status = 'rejected';
+					Task.findOneAndUpdate(req.params.id, task, {upsert: true}, function(err, updated_t_db){
+						if (err) throw err;
+						return res.status(200).send('successfully saved');
+					});
 				}
 				else {
 					if (action === 'reject' && !isCreator)
@@ -419,7 +440,7 @@ app.post('/api/task/:id/action', function(req, res){
 					is_assignee: isAssignee
 				});
 			}
-			res.json(task);
+	
 		});
 	}
 });
