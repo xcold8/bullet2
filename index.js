@@ -346,7 +346,17 @@ app.post('/api/task/:id/action', function(req, res){
 		res.redirect('/login');
 	}
 	else {
-		Task.findById(req.params.id, {'_id':0}).
+
+		var _ok = function(new_status){
+			res.json({status: "OK", new_task_status: new_status});
+		};
+
+		var _fail = function(err){
+			res.json({status: "FAIL", error: err || "Internal error"});
+		};
+
+
+		Task.findById(req.params.id).
 		populate('creator').
 		populate('assignees').
 		populate({
@@ -356,137 +366,176 @@ app.post('/api/task/:id/action', function(req, res){
 				model: "User"
 			}
 		}).
-		lean().
+		//lean().
 		exec(function(err, task){
+
 			var isCreator = checkPermission('creator', req.user, [{_id: task.creator._id.toString()}]);
 			var isAssignee = checkPermission('assignee', req.user, task.assignees);
-			var action = req.body.action;
+
 			if (!isAssignee && !isCreator){
-				res.json({error: "You are not elgible to make changes to this task"});
+				_fail("access_denied");
 			}
-			if (isAssignee || isCreator) {
-				var updated_t = new Task(task);
-				if (action === 'start' && isAssignee){
-					console.log('2 started');
-					task.status = 'started';
-					Task.findOneAndUpdate(req.params.id, task, {upsert: true}, function(err, updated_t_db){
-						if (err) throw err;
-						return res.status(200).send(updated_t_db);
-					});
-				}
-				else {
-					if (action === 'start' && !isAssignee){
-						console.log('Error: you are not assigned for this task, therefore status will not change to: started');
-					}
-				}
-				if (action === 'finish' && isAssignee){
-					console.log('3 finished');
-					task.status = 'finished';
-					Task.findOneAndUpdate(req.params.id, task, {upsert: true}, function(err, updated_t_db){
-						if (err) throw err;
-						return res.status(200).send('successfully saved');
-					});
-				}
-				else {
-					if (action === 'finished' && !isAssignee){
-						console.log('Error: you are not assigned for this task, therefore status will not change to: finished');
-					}
-				}
-				if (action === 'unfinish' && isAssignee){
-					console.log('4 unfinish');
-					task.status = 'started';
-					Task.findOneAndUpdate(req.params.id, task, {upsert: true}, function(err, updated_t_db){
-						if (err) throw err;
-						return res.status(200).send('successfully saved');
-					});
-				}
-				else {
-					if (action === 'unfinish' && !isAssignee){
-						console.log('Error: you are not assigned for this task, therefore status will not change to: unfinish');
-					}
-				}
-				if (action === 'accept' && isCreator){
-					console.log('5 accepted');
-					task.status = 'accepted';
-					Task.findOneAndUpdate(req.params.id, task, {upsert: true}, function(err, updated_t_db){
-						if (err) return res.send(500, { error: err });
-						return res.status(200).send('successfully saved');
-					});
-				}
-				else {
-					if (action === 'accept' && !isCreator){
-						console.log('Error: you are not the creator for this task, therefore status will not change to: accepted');
-					}
-				}
-				if (action === 'reject' && isCreator){
-					console.log('6 rejected');
-					task.status = 'rejected';
-					Task.findOneAndUpdate(req.params.id, task, {upsert: true}, function(err, updated_t_db){
-						if (err) throw err;
-						return res.status(200).send('successfully saved');
-					});
-				}
-				else {
-					if (action === 'reject' && !isCreator)
-					console.log('Error: you are not assigned for this task, therefore status will not change to: rejected ');
-				}
-				if (action === 'restart' && isAssignee){
-					console.log('7 restart');
-					
-
-
-					console.log("GAL start");
-					Task.findById(req.params.id, function(err, obj){
-						if (err) {
-							console.log("ERROR: " + err);
-							throw err;
-						}
-						else {
-							obj.status = "started";
-							obj.save(function(err){
-								if (err) {
-									console.log("ERROR saving");
-									throw err;
-								}
-								else {
-									console.log("Saved!");
-									return res.status(200);
-								}
-							});
-						}
-					});
-					console.log("GAL end");
-
-					// task.status = 'started';
-					// Task.findOneAndUpdate(req.params.id, task, {upse
-					// 	rt: true}, function (err, updated_t_db){
-					// 	if (err) throw err;
-					// 	return res.status(200).json(updated_t_db);
-					// });
-				}
-				else {
-					if (action === 'restart' && !isAssignee){
-						var e_item = ({
-							current_task_status: task.status,
-							action_requested: action,
-							is_creator: isCreator,
-							is_assignee: isAssignee
-						});
-						return res.json(e_item);
-					}
-				}
-			} 
 			else {
-				console.log('error occured, printing related info');
-				var e_item_sec = ({
-					current_task_status: task.status,
-					action_requested: action,
-					is_creator: isCreator,
-					is_assignee: isAssignee
-				});
-				return res.json(e_item_sec);
+				var action = req.body.action,
+					creator_allowed_actions = ["accept", "reject"],
+					assignee_allowed_actions = ["start", "finish", "unfinish", "restart"];
+
+				if ((isCreator && creator_allowed_actions.indexOf(action) == -1) || (isAssignee && assignee_allowed_actions.indexOf(action) == -1)) {
+					_fail("bad_action");
+				}
+				else {
+					// has permission to do this action.
+					var new_status = null;
+					if (action == "accept") new_status = "accepted";
+					else if (action == "reject") new_status = "rejected";
+					else if (action == "start") new_status = "started";
+					else if (action == "finish") new_status = "finished";
+					else if (action == "unfinish") new_status = "started";
+					else if (action == "restart") new_status = "started";
+
+					if (new_status == null) {
+						_fail("unknown_action");
+					}
+					else {
+						task.status = new_status;
+						task.save(function(err){
+							if (err) {
+								_fail(err);
+							}
+							else {
+								_ok(new_status);
+							}
+						});
+					}
+				}
 			}
-	
 		});
 	}
 });
+
+
+			// var action = req.body.action;
+			// if (!isAssignee && !isCreator){
+			// 	res.json({error: "You are not elgible to make changes to this task"});
+			// }
+			// if (isAssignee || isCreator) {
+			// 	var updated_t = new Task(task);
+			// 	if (action === 'start' && isAssignee){
+			// 		task.status = 'started';
+			// 		Task.findOneAndUpdate(req.params.id, task, {upsert: true}, function(err, updated_t_db){
+			// 			if (err) throw err;
+			// 			return res.status(200).send(updated_t_db);
+			// 		});
+			// 	}
+			// 	else {
+			// 		if (action === 'start' && !isAssignee){
+			// 			console.log('Error: you are not assigned for this task, therefore status will not change to: started');
+			// 		}
+			// 	}
+			// 	if (action === 'finish' && isAssignee){
+			// 		console.log('3 finished');
+			// 		task.status = 'finished';
+			// 		Task.findOneAndUpdate(req.params.id, task, {upsert: true}, function(err, updated_t_db){
+			// 			if (err) throw err;
+			// 			return res.status(200).send('successfully saved');
+			// 		});
+			// 	}
+			// 	else {
+			// 		if (action === 'finished' && !isAssignee){
+			// 			console.log('Error: you are not assigned for this task, therefore status will not change to: finished');
+			// 		}
+			// 	}
+			// 	if (action === 'unfinish' && isAssignee){
+			// 		console.log('4 unfinish');
+			// 		task.status = 'started';
+			// 		Task.findOneAndUpdate(req.params.id, task, {upsert: true}, function(err, updated_t_db){
+			// 			if (err) throw err;
+			// 			return res.status(200).send('successfully saved');
+			// 		});
+			// 	}
+			// 	else {
+			// 		if (action === 'unfinish' && !isAssignee){
+			// 			console.log('Error: you are not assigned for this task, therefore status will not change to: unfinish');
+			// 		}
+			// 	}
+			// 	if (action === 'accept' && isCreator){
+			// 		console.log('5 accepted');
+			// 		task.status = 'accepted';
+			// 		Task.findOneAndUpdate(req.params.id, task, {upsert: true}, function(err, updated_t_db){
+			// 			if (err) return res.send(500, { error: err });
+			// 			return res.status(200).send('successfully saved');
+			// 		});
+			// 	}
+			// 	else {
+			// 		if (action === 'accept' && !isCreator){
+			// 			console.log('Error: you are not the creator for this task, therefore status will not change to: accepted');
+			// 		}
+			// 	}
+			// 	if (action === 'reject' && isCreator){
+			// 		console.log('6 rejected');
+			// 		task.status = 'rejected';
+			// 		Task.findOneAndUpdate(req.params.id, task, {upsert: true}, function(err, updated_t_db){
+			// 			if (err) throw err;
+			// 			return res.status(200).send('successfully saved');
+			// 		});
+			// 	}
+			// 	else {
+			// 		if (action === 'reject' && !isCreator)
+			// 		console.log('Error: you are not assigned for this task, therefore status will not change to: rejected ');
+			// 	}
+			// 	if (action === 'restart' && isAssignee){
+			// 		console.log('7 restart');
+					
+
+
+			// 		console.log("GAL start");
+			// 		Task.findById(req.params.id, function(err, obj){
+			// 			if (err) {
+			// 				console.log("ERROR: " + err);
+			// 				throw err;
+			// 			}
+			// 			else {
+			// 				obj.status = "started";
+			// 				obj.save(function(err){
+			// 					if (err) {
+			// 						console.log("ERROR saving");
+			// 						throw err;
+			// 					}
+			// 					else {
+			// 						console.log("Saved!");
+			// 						return res.status(200);
+			// 					}
+			// 				});
+			// 			}
+			// 		});
+			// 		console.log("GAL end");
+
+			// 		// task.status = 'started';
+			// 		// Task.findOneAndUpdate(req.params.id, task, {upse
+			// 		// 	rt: true}, function (err, updated_t_db){
+			// 		// 	if (err) throw err;
+			// 		// 	return res.status(200).json(updated_t_db);
+			// 		// });
+			// 	}
+			// 	else {
+			// 		if (action === 'restart' && !isAssignee){
+			// 			var e_item = ({
+			// 				current_task_status: task.status,
+			// 				action_requested: action,
+			// 				is_creator: isCreator,
+			// 				is_assignee: isAssignee
+			// 			});
+			// 			return res.json(e_item);
+			// 		}
+			// 	}
+			// } 
+			// else {
+			// 	console.log('error occured, printing related info');
+			// 	var e_item_sec = ({
+			// 		current_task_status: task.status,
+			// 		action_requested: action,
+			// 		is_creator: isCreator,
+			// 		is_assignee: isAssignee
+			// 	});
+			// 	return res.json(e_item_sec);
+			// }

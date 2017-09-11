@@ -39,7 +39,6 @@ $(document).ready(function(){
 	};
 
 	function showTaskOnFeed(data){
-		$('.dimmer').removeClass('active');
 		if (data.error) {
 			if (data.error == "not_logged_in") {
 				window.location.reload(true);
@@ -69,24 +68,24 @@ $(document).ready(function(){
 		$('#comments_cont').append(html);
 	};
 
-	$.ajax({
-		type: 'GET',
-		async: true,
-		dataType: 'json',
-		url: '/api/task/'+getSegment(window.location.href, 2),
-		success: function(res){
-			current_user = res.current_user;
-			showTaskOnFeed(res);
-			var button_selector = modifyCssByData(res);
-			console.log(button_selector);
-			$(button_selector).addClass('active');
+	function load_task_data(){
+		$('.dimmer').addClass('active');
+		$.ajax({
+			type: 'GET',
+			async: true,
+			dataType: 'json',
+			url: '/api/task/'+getSegment(window.location.href, 2),
+			success: function(res){
+				current_user = res.current_user;
+				showTaskOnFeed(res);
+				var button_selector = modifyCssByData(res);
+				$(button_selector).addClass('active');
+				$('.dimmer').removeClass('active');
+			}
+		});
+	};
 
-
-
-		}
-	});
-
-$('#sComment').click(function(){
+	$('#sComment').click(function(){
 		var $commentBody = tinyMCE.activeEditor.getContent({});
 		var task_id = getSegment(window.location.href, 2);
 		var new_comm = {
@@ -119,11 +118,22 @@ $('#sComment').click(function(){
 
 	//Actions buttons jquery onclick
 	function postActionToSrv(task_id,action_name){
+		$('.dimmer').addClass('active');
 		$.post('/api/task/'+task_id+'/action/', {action: action_name}, function(res){
-	 	console.log(res);
-
+			if (res.status && res.status == "OK") {
+				if (res.new_task_status) {
+					load_task_data();
+				}
+				else {
+					window.location.reload(true);
+				}
+			}
+			else {
+				alert("Error sending action: " + res.error);
+			}
 	 	});
 	}
+
 	$('#t_start').click(function(){
 		postActionToSrv(getSegment(window.location.href, 2), 'start');
 	});
@@ -144,9 +154,7 @@ $('#sComment').click(function(){
 	});
 
 
-
-
-
+	load_task_data();
 
 
 });
