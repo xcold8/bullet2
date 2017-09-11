@@ -27,7 +27,7 @@ $(document).ready(function(){
 			if (data.task.status === 'rejected' && data.is_creator){
 				return '.btncontainer .rejectedt .creator';
 			}
-			if (data.task.status ==='accepted' && data.is_assignee || data.is_creator){
+			if (data.task.status ==='accepted' && (data.is_assignee || data.is_creator)){
 				return '.btncontainer .acceptedt div.label';
 			}
 		}
