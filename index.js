@@ -378,13 +378,26 @@ app.post('/api/task/:id/action', function(req, res){
 			else {
 				var action = req.body.action,
 					creator_allowed_actions = ["accept", "reject"],
-					assignee_allowed_actions = ["start", "finish", "unfinish", "restart"];
+					assignee_allowed_actions = ["start", "finish", "unfinish", "restart"],
+					has_permission = true;
 
-				if ((isCreator && creator_allowed_actions.indexOf(action) == -1) || (isAssignee && assignee_allowed_actions.indexOf(action) == -1)) {
-					_fail("bad_action");
+				if (isCreator && isAssignee) {
+					if (creator_allowed_actions.indexOf(action) == -1 && assignee_allowed_actions.indexOf(action) == -1) {
+						has_permission = false;
+					}
 				}
-				else {
-					// has permission to do this action.
+				else if (isCreator) {
+					if (creator_allowed_actions.indexOf(action) == -1) {
+						has_permission = false;
+					}
+				}
+				else if (isAssignee) {
+					if (assignee_allowed_actions.indexOf(action) == -1) {
+						has_permission = false;
+					}
+				}
+
+				if (has_permission) {
 					var new_status = null;
 					if (action == "accept") new_status = "accepted";
 					else if (action == "reject") new_status = "rejected";
@@ -407,6 +420,9 @@ app.post('/api/task/:id/action', function(req, res){
 							}
 						});
 					}
+				}
+				else {
+					_fail("bad_action");
 				}
 			}
 		});

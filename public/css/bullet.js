@@ -58,6 +58,15 @@ $('.container .item').tab({
 		var template = $('#hbdemo').html();
 		var templateScript = Handlebars.compile(template, {noEscape: true});
 		console.log('templating...');
+		for (var i=0; i<data.task.length; i++) {
+			var task = data.task[i];
+			if (task.status == "started") {
+				task.icon_class = "user";
+			}
+			else if (task.status == "finished") {
+				task.icon_class = "user outline";
+			}
+		}
 		var html = templateScript(data);
 
 		var selector = 'div.tab.segment[data-tab="' + tab_name + '"] .list_cont';
