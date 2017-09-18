@@ -1,6 +1,27 @@
 var path = require('path');
 var moment = require('moment');
 var cookieParser = require('cookie-parser');
+var nodemailer = require('nodemailer');
+var hbs = require('nodemailer-express-handlebars');
+var hbs_options = {
+     viewEngine: {
+         extname: '.hbs',
+         layoutsDir: 'public/views/email/',
+         defaultLayout : 'template',
+         partialsDir : 'public/views/partials/',
+     },
+     viewPath: 'public/views/email/',
+     extName: '.hbs'
+};
+var glTransport = require('nodemailer-smtp-transport');
+var g_mail = {
+		service:'gmail',
+		auth: {
+			user: 'bulletsystemv2@gmail.com',
+			pass: 'Gettingjiggywithit'
+		}
+};
+var mailer = nodemailer.createTransport(glTransport(g_mail));
 var bodyParser = require('body-parser');
 var jsonParser = bodyParser.json();
 var models = require('./models');
@@ -48,13 +69,34 @@ passport.deserializeUser(function(id, done) {
   });
 });
 
-require('handlebars');
+var handlebars = require('handlebars');
+
 app.use(passport.initialize());
 app.use(passport.session());
 app.listen(3000, function (){
 	console.log('Listening on port 3000');
 });
+mailer.use('compile', hbs(hbs_options));
 
+// Sending an email
+/*mailer.sendMail({
+     from: 'bulletsystemv2@gmail.com',
+     to: 'haimzur@gmail.com',
+     subject: 'Testing this stuff out',
+     template: 'assigned_email',
+     context: {
+     	assignees:{
+     		first_name: 'wallak'
+     	},
+        creator: {
+        	first_name:'Joseph'
+        }, 
+     }
+ }, function (error, response) {
+     if (error) throw error;
+     mailer.close();
+ });
+*/
 function checkPermission(access_level,logged_user,task_assignees){
 	if (access_level === 'assignee'){
 		var i;
@@ -406,7 +448,7 @@ app.post('/api/task/:id/action', function(req, res){
 					else if (action == "unfinish") new_status = "started";
 					else if (action == "restart") new_status = "started";
 
-					if (new_status == null) {
+					if (new_status === null) {
 						_fail("unknown_action");
 					}
 					else {
@@ -423,6 +465,51 @@ app.post('/api/task/:id/action', function(req, res){
 				}
 				else {
 					_fail("bad_action");
+				}
+			}
+		});
+	}
+});
+app.get('/test', function(req, res){
+	res.sendFile(__dirname +'/public/test.html');
+
+});
+app.post('/api/task/:id/updateAssignees', function (req,res){
+	if (!req.isAuthenticated()){
+		res.redirect('/login');
+	}
+	else {
+		Task.findById(req.params.id).
+		populate('creator').
+		exec(function(err, task){
+			if (err) throw err;
+			else {
+				var _ok = function(new_assignees){
+				res.json({status: "OK", new_assignees_status: new_assignees});
+				};
+				var _fail = function(err){
+				res.json({status: "FAIL", error: err || "Internal error"});
+				};
+				var update_permission = true;
+				var isCreator = checkPermission('creator', req.user, [{_id: task.creator._id.toString()}]);
+				var isAssignee = checkPermission('assignee', req.user, task.assignees);
+				if (!isCreator && !isAssignee){
+					_fail('access denied');
+				}
+				else if (isAssignee){
+					update_permission = false;
+				}
+				else if (isCreator){
+					update_permission = true;
+				}
+				else if (isCreator && isAssignee){
+					update_permission = true;
+				}
+
+				if (update_permission){
+					task.assignees = req.body.new_assignees;
+					task.save();
+					_ok('success:'+task.assignees);
 				}
 			}
 		});

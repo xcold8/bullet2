@@ -30,18 +30,18 @@
   {{/each}}
 </script>
 <body>
-    <div class="ui container">
-      <div class="ui segment">
-        <div class="header">
-              <h1 class="ui center aligned large header">Bullet</h1>
-              <h2 class="ui center aligned medium header">Ticket System</h2>
-              <h3 class="ui center aligned small header">Current tasks:</h3>
-        </div>
-        <div class="ui inverted page dimmer active">
-          <div class="ui massive text loader">Please Wait...</div>
-        </div>   
+  <div class="ui inverted segment">
+    <div class="ui inverted page dimmer active">
+      <div class="ui massive text loader">Please Wait...</div>
+    </div>   
+  </div>
 
-      </div>
+    <div class="header">
+      <h1 class="ui center aligned large header">Bullet</h1>
+      <h2 class="ui center aligned medium header">Ticket System</h2>
+      <h3 class="ui center aligned small header">Current tasks:</h3>
+    </div>
+    <div class="ui container">
         <div id="logOut" class="ui small header">Logout</div>
           <div class="ui items tasklist">
             <div class="ui table header" id="js-issues-toolbar">
@@ -70,7 +70,7 @@
               <div class="ui right floated button blue" id="newTask">
                   <a href="/newTask">Create new ticket</a>
               </div>  
-          </div>
+        </div>
 </body>
 
 </html>

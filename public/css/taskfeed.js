@@ -3,6 +3,28 @@ var taskForCommentData = null;
 
 $(document).ready(function(){
 
+	//shows the current active users selected in dropdown
+	function showUserInDropdown(data){
+		var wrapper = data.task;
+		$.get('/api/getUsers', function(all_users){
+			var wrapperinho = {objects: all_users};
+			var usertmpl = $('#allindropdown').html();
+			var tmplScript = Handlebars.compile(usertmpl);
+			var html_con = tmplScript(wrapperinho);
+			$('#assigned_tview').append(html_con);
+			for (var i=0; i<wrapperinho.objects.length; i++){
+				for (var j=0;j<wrapper.assignees.length; j++){
+					if (wrapperinho.objects[i]._id.toString() == wrapper.assignees[j]._id.toString()){
+						$('#assigned_tview').dropdown('set selected', wrapperinho.objects[i].first_name);
+					}
+				}
+			}
+			$('#assigned_tview').dropdown('refresh');
+		});
+	}
+
+
+
 	function modifyCssByData(data){
 		$('.btncontainer div.button').removeClass('active');
 		if (!data.is_assignee && !data.is_creator){
@@ -33,59 +55,52 @@ $(document).ready(function(){
 		}
 	}
 
+	function getAssigneesSelector(data){
+		$('.assignees_btn_container').removeClass('active');
+		if (!data.is_assignee && !data.is_creator){
+			return;
+		}
+		else if (data.is_assignee || data.is_creator){
+			if (data.is_creator){
+				return '.assignees_btn_container .creator_btn';
+			}
+			else {
+				if (data.is_assignee){
+					return '.assignees_btn_container .assignee_btn';
+				}
+			}
+		}
+	}
 
 	var getSegment = function (url, index) {
    		return url.replace(/^https?:\/\//, '').split('/')[index];
 	};
-
-	function showTaskOnFeed(data){
-		if (data.error) {
-			if (data.error == "not_logged_in") {
-				window.location.reload(true);
-			}
-			else {
-				alert(data.error);
-			}			
-			return;
-		}
-
-		// one time values
-		$('#task_title').text(data.task.title || "Unknown");
-		$('#task_id').text('#'+data.task._id || "Unknown");
-		$('#task_status').text(data.task.status || "Unknown");
-		$('#task_creator').text(data.task.creator.first_name + " " + data.task.creator.last_name);
-		$('#com_num').text(data.task.comments.length +" "+ 'Comments');
-
-		// repeat for each comment and render as one HTML
-		render_comments(data.task);
-		
-	}
-
 	function render_comments(item){
 		var template = $('#comment_template').html();
 		var templateScript = Handlebars.compile(template, {noEscape: true});
 		var html = templateScript(item);
 		$('#comments_cont').append(html);
-	};
+	}
+	$('#t_start').click(function(){
+		postActionToSrv(getSegment(window.location.href, 2), 'start');
+	});
+	$('#t_finish').click(function(){
+		postActionToSrv(getSegment(window.location.href, 2), 'finish');
+	});
+	$('#t_unfinish').click(function(){
+		postActionToSrv(getSegment(window.location.href, 2), 'unfinish');
+	});
+	$('#t_accept').click(function(){
+		postActionToSrv(getSegment(window.location.href, 2), 'accept');
+	});
+	$('#t_reject').click(function(){
+		postActionToSrv(getSegment(window.location.href, 2), 'reject');
+	});
+	$('#t_restart').click(function(){
+		postActionToSrv(getSegment(window.location.href, 2), 'restart');
+	});
 
-	function load_task_data(){
-		$('.dimmer').addClass('active');
-		$.ajax({
-			type: 'GET',
-			async: true,
-			dataType: 'json',
-			url: '/api/task/'+getSegment(window.location.href, 2),
-			success: function(res){
-				current_user = res.current_user;
-				showTaskOnFeed(res);
-				var button_selector = modifyCssByData(res);
-				$(button_selector).addClass('active');
-				$('.dimmer').removeClass('active');
-			}
-		});
-	};
-
-	$('#sComment').click(function(){
+		$('#sComment').click(function(){
 		var $commentBody = tinyMCE.activeEditor.getContent({});
 		var task_id = getSegment(window.location.href, 2);
 		var new_comm = {
@@ -109,55 +124,117 @@ $(document).ready(function(){
 			data: new_comm,
 			datatype: 'json',
 			url: '/api/newComment',
-			success:function(res){
-			
+			success:function(){
+				
 			}
 		});
 	});
+		function load_task_data(){
+			$('.dimmer').addClass('active');
+			$.ajax({
+				type: 'GET',
+				async: true,
+				dataType: 'json',
+				url: '/api/task/'+getSegment(window.location.href, 2),
+				success: function(res){
+					current_user = res.current_user;
+					showTaskOnFeed(res);
+					var button_selector = modifyCssByData(res);
+					var assignees_selector = getAssigneesSelector(res);
+					$(button_selector).addClass('active');
+					$(assignees_selector).addClass('active');
+					showUserInDropdown(res);
+					$('.dimmer').removeClass('active');
+				}
+			});
+		}
 
 
-	//Actions buttons jquery onclick
-	function postActionToSrv(task_id,action_name){
-		$('.dimmer').addClass('active');
-		$.post('/api/task/'+task_id+'/action/', {action: action_name}, function(res){
-			if (res.status && res.status == "OK") {
-				if (res.new_task_status) {
-					load_task_data();
-				}
-				else {
-					window.location.reload(true);
-				}
+function showTaskOnFeed(data){
+		if (data.error){
+			if (data.error == "not_logged_in"){
+				window.location.reload(true);
 			}
 			else {
-				alert("Error sending action: " + res.error);
-			}
-	 	});
+				alert(data.error);
+			}			
+			return;
+		}
+		if (data.task.status == 'started'){
+			$('.ui.yellow.label').addClass('purple').removeClass('yellow');
+		}
+		else if (data.task.status == 'finished'){
+			$('.ui.yellow.label').addClass('grey').removeClass('yellow');
+		}
+		else if (data.task.status == 'rejected'){
+			$('.ui.yellow.label').addClass('red').removeClass('yellow');
+		}
+		else if (data.task.status == 'accepted'){
+			$('.ui.yellow.label').addClass('green').removeClass('yellow');
+		}
+	// one time values
+		$('#task_title').text('Title:'+' '+' '+data.task.title || "Unknown");
+		$('#task_id').text('Ticket ID: #'+data.task._id || "Unknown");
+		$('#task_status').text(data.task.status || "Unknown");
+		$('#task_creator').text(data.task.creator.first_name + " " + data.task.creator.last_name);
+		$('#com_num').text(data.task.comments.length +" "+ 'Comments');
+
+	// repeat for each comment and render as one HTML
+		render_comments(data.task);	
 	}
+	$('#update_assignees').click(function(){
+		var $updated_assignees = [];
+		var server_assignees = [];
+		$('a.visible').each(function(){
+			id_extraction = $(this).attr('data-value');
+			console.log(id_extraction);
+			$updated_assignees.push(id_extraction);
+		});
+		$.get('/api/task/'+getSegment(window.location.href, 2), function(res){
+			for (var i=0; i<res.task.assignees.length; i++){
+				server_assignees.push(res.task.assignees[i]._id.toString());
+			}
 
-	$('#t_start').click(function(){
-		postActionToSrv(getSegment(window.location.href, 2), 'start');
-	});
-	$('#t_finish').click(function(){
-		postActionToSrv(getSegment(window.location.href, 2), 'finish');
-	});
-	$('#t_unfinish').click(function(){
-		postActionToSrv(getSegment(window.location.href, 2), 'unfinish');
-	});
-	$('#t_accept').click(function(){
-		postActionToSrv(getSegment(window.location.href, 2), 'accept');
-	});
-	$('#t_reject').click(function(){
-		postActionToSrv(getSegment(window.location.href, 2), 'reject');
-	});
-	$('#t_restart').click(function(){
-		postActionToSrv(getSegment(window.location.href, 2), 'restart');
+			if (server_assignees.toString() == $updated_assignees.toString()){
+				console.log('no changes made');
+				return;
+			}
+			else {
+				$.post('/api/task/'+getSegment(window.location.href, 2)+'/updateAssignees', {new_assignees: $updated_assignees}, function(res){
+					console.log(res);
+				});
+			}
+
+		});
 	});
 
+	function diff(arr_a, arr_b){
+		var holderArray = [];
+		for (var i=0;i<arr_a.length; i++){
+			if (arr_b(indexOf(arr_a[i])) === -1){
+				holderArray.push(arr_a[i]);
+			}
+		}
+		for (var j=0; j<arr_b.length; j++){
+			if (arr_a(indexOf(arr_b[i])) === -1){
+			}
+		}
+		return holderArray;
+	}
 
 	load_task_data();
 
 
 });
+
+	
+
+
+
+
+	
+
+
 
 
 	

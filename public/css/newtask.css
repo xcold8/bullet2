@@ -48,3 +48,7 @@ div.small.header.meta {color: #a3aab1;display:inline-block !important;overflow:h
 .btncontainer .rejectedt .assignee{display:none;}
 .btncontainer .rejectedt .creator.active{display:block;}
 .btncontainer .rejectedt .assignee.active{display:block;}
+.assignees_btn_container .creator_btn{display:none;}
+.assignees_btn_container .creator_btn.active{display:block;}
+.assignees_btn_container .assignee_btn{display:none;}
+.assignees_btn_container .assignee_btn.active{display:block;}

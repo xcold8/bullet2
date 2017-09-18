@@ -1,6 +1,6 @@
 $(document).ready(function(){
 
-		function addUserToDropdown(data){
+	function addUserToDropdown(data){
 		var wrapper = {objects: data};
 		var tmplate = $('#assigndropdown').html();
 		var tmplateScript = Handlebars.compile(tmplate);
@@ -48,7 +48,7 @@ $(document).ready(function(){
 		$('.dropdown').dropdown('restore defaults');
 		tinyMCE.activeEditor.setContent('');
 	});
-	$('select.dropdown').click(function(){
+	$('#newt_dropdown').click(function(){
 		$.ajax({
 	  	 type:'GET',
 	  	 async: true,

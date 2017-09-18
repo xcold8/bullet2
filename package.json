@@ -22,6 +22,10 @@
     "express": "^4.15.3",
     "handlebars": "^4.0.10",
     "moment": "^2.18.1",
+    "nodemailer": "^4.1.0",
+    "nodemailer-direct-transport": "^3.3.2",
+    "nodemailer-express-handlebars": "^2.0.0",
+    "nodemailer-smtp-transport": "^2.7.4",
     "passport": "^0.3.2",
     "passport-local": "^1.0.0",
     "path": "^0.12.7"
