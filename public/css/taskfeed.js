@@ -16,6 +16,7 @@ $(document).ready(function(){
 				for (var j=0;j<wrapper.assignees.length; j++){
 					if (wrapperinho.objects[i]._id.toString() == wrapper.assignees[j]._id.toString()){
 						$('#assigned_tview').dropdown('set selected', wrapperinho.objects[i].first_name);
+						$('.assignee_btn').append('<div class="ui teal label">'+wrapperinho.objects[i].first_name+'</div>');
 					}
 				}
 			}
@@ -70,6 +71,24 @@ $(document).ready(function(){
 				}
 			}
 		}
+	}
+		//Actions buttons jquery onclick
+	function postActionToSrv(task_id,action_name){
+		idx = 0;
+		$('.dimmer').addClass('active');
+		$.post('/api/task/'+task_id+'/action/', {action: action_name}, function(res){
+			if (res.status && res.status == "OK") {
+				if (res.new_task_status) {
+					load_task_data();
+				}
+				else {
+					window.location.reload(true);
+				}
+			}
+			else {
+				alert("Error sending action: " + res.error);
+			}
+	 	});
 	}
 
 	var getSegment = function (url, index) {
@@ -183,6 +202,8 @@ function showTaskOnFeed(data){
 		render_comments(data.task);	
 	}
 	$('#update_assignees').click(function(){
+		//two arrays, server assignees represent the current assignees on db, while the updated_assignees
+		//
 		var $updated_assignees = [];
 		var server_assignees = [];
 		$('a.visible').each(function(){
@@ -208,19 +229,6 @@ function showTaskOnFeed(data){
 		});
 	});
 
-	function diff(arr_a, arr_b){
-		var holderArray = [];
-		for (var i=0;i<arr_a.length; i++){
-			if (arr_b(indexOf(arr_a[i])) === -1){
-				holderArray.push(arr_a[i]);
-			}
-		}
-		for (var j=0; j<arr_b.length; j++){
-			if (arr_a(indexOf(arr_b[i])) === -1){
-			}
-		}
-		return holderArray;
-	}
 
 	load_task_data();
 

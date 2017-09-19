@@ -1,4 +1,5 @@
 var path = require('path');
+var fs = require('file-system');
 var moment = require('moment');
 var cookieParser = require('cookie-parser');
 var nodemailer = require('nodemailer');
@@ -78,25 +79,7 @@ app.listen(3000, function (){
 });
 mailer.use('compile', hbs(hbs_options));
 
-// Sending an email
-/*mailer.sendMail({
-     from: 'bulletsystemv2@gmail.com',
-     to: 'haimzur@gmail.com',
-     subject: 'Testing this stuff out',
-     template: 'assigned_email',
-     context: {
-     	assignees:{
-     		first_name: 'wallak'
-     	},
-        creator: {
-        	first_name:'Joseph'
-        }, 
-     }
- }, function (error, response) {
-     if (error) throw error;
-     mailer.close();
- });
-*/
+
 function checkPermission(access_level,logged_user,task_assignees){
 	if (access_level === 'assignee'){
 		var i;
@@ -123,7 +106,99 @@ function checkPermission(access_level,logged_user,task_assignees){
 	}
 
 }
-var newItemArr = [];
+//Sending an email
+var idx = 0;
+function sendMail(task, hbs_temp){
+
+	if (idx >= task.assignees.length){
+		idx = 0;
+		return;
+	}
+	else {
+		if (hbs_temp == 'assignee'){
+			console.log('Sending an email to assignee');
+			mailer.sendMail({
+		     from: 'bulletsystemv2@gmail.com',
+		     to: task.assignees[idx].email,
+		     subject: 'Bullet WorkDesk - Hello '+task.assignees[idx].first_name+' '+'You have been assigned for a ticket',
+		     template: 'assignee',
+		     context: {
+		     	assignees:{
+		     		first_name: task.assignees[idx].first_name,
+		     	},
+		        creator: {
+		        	first_name: task.creator.first_name,
+		        }, 
+		     }
+		 	}, function (error, response) {
+		    	if (error) throw error;
+		     	mailer.close();
+		 	});
+		}
+		else if (hbs_temp == 'finish'){
+			console.log('Sending finished notification');
+			mailer.sendMail({
+		     from: 'bulletsystemv2@gmail.com',
+		     to: task.creator.email,
+		     subject: 'Bullet WorkDesk - All done '+task.creator.first_name+'. '+task.assignees[idx].first_name+' has finished to work on his ticket',
+		     template: 'finish',
+		     context: {
+		     	assignees:{
+		     		first_name: task.assignees[idx].first_name,
+		     	},
+		        creator: {
+		        	first_name: task.creator.first_name,
+		        }, 
+		     }
+		 	}, function (error, response) {
+		    	if (error) throw error;
+		     	mailer.close();
+		 	});
+		}
+		else if (hbs_temp == 'reject'){
+			console.log('Sending rejected notification');
+			mailer.sendMail({
+		     from: 'bulletsystemv2@gmail.com',
+		     to: task.assignees[idx].email,
+		     subject: 'Bullet WorkDesk - Bummer '+task.assignees[idx].first_name+'. '+task.creator.first_name+' has rejected a ticket',
+		     template: 'reject',
+		     context: {
+		     	assignees:{
+		     		first_name: task.assignees[idx].first_name,
+		     	},
+		        creator: {
+		        	first_name: task.creator.first_name,
+		        }, 
+		     }
+		 	}, function (error, response) {
+		    	if (error) throw error;
+		     	mailer.close();
+		 	});
+		}
+		else if (hbs_temp == 'accept'){
+			console.log('Sending accepted notification');
+			mailer.sendMail({
+		     from: 'bulletsystemv2@gmail.com',
+		     to: task.assignees[idx].email,
+		     subject: 'Bullet WorkDesk - Kuddos '+task.assignees[idx].first_name+'. '+task.creator.first_name+' has accepted a ticket',
+		     template: 'accept',
+		     context: {
+		     	assignees:{
+		     		first_name: task.assignees[idx].first_name,
+		     	},
+		        creator: {
+		        	first_name: task.creator.first_name,
+		        }, 
+		     }
+		 	}, function (error, response) {
+		    	if (error) throw error;
+		     	mailer.close();
+		 	});
+		}
+	}
+	idx++;
+	sendMail(task, hbs_temp);
+}
 
 app.get('/', function(req,res){
 	res.redirect('/tasks');
@@ -282,6 +357,15 @@ app.post('/api/newTask', function (req,res){
 				nTask.save(function(err, story){
 					if (err) throw err;
 					else {
+						Task.findById(story._id).
+						populate('creator').
+						populate('assignees').
+						exec(function(err, task){
+							if (err) throw err;
+							else {
+								sendMail(task, 'assignee');
+							}
+						});
 						res.json(story._id);
 					}
 				});
@@ -441,10 +525,21 @@ app.post('/api/task/:id/action', function(req, res){
 
 				if (has_permission) {
 					var new_status = null;
-					if (action == "accept") new_status = "accepted";
-					else if (action == "reject") new_status = "rejected";
-					else if (action == "start") new_status = "started";
-					else if (action == "finish") new_status = "finished";
+					if (action == "accept"){
+						new_status = "accepted";
+						sendMail(task, 'accept');
+					} 
+					else if (action == "reject") {
+						new_status = "rejected";
+						sendMail(task, 'reject');
+					}
+					else if (action == "start"){
+						new_status = "started";
+					} 
+					else if (action == "finish"){
+						new_status = "finished";
+						sendMail(task, 'finish');
+					} 
 					else if (action == "unfinish") new_status = "started";
 					else if (action == "restart") new_status = "started";
 
@@ -509,7 +604,7 @@ app.post('/api/task/:id/updateAssignees', function (req,res){
 				if (update_permission){
 					task.assignees = req.body.new_assignees;
 					task.save();
-					_ok('success:'+task.assignees);
+					_ok('success: '+task.assignees);
 				}
 			}
 		});
