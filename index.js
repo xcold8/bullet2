@@ -569,6 +569,10 @@ app.get('/test', function(req, res){
 	res.sendFile(__dirname +'/public/test.html');
 
 });
+app.get('/tfbeta', function(req, res){
+	res.sendFile(__dirname +'/public/tfbeta.html');
+
+});
 app.post('/api/task/:id/updateAssignees', function (req,res){
 	if (!req.isAuthenticated()){
 		res.redirect('/login');

@@ -52,3 +52,4 @@ div.small.header.meta {color: #a3aab1;display:inline-block !important;overflow:h
 .assignees_btn_container .creator_btn.active{display:block;}
 .assignees_btn_container .assignee_btn{display:none;}
 .assignees_btn_container .assignee_btn.active{display:block;}
+div#update_assignees{top:20px;}

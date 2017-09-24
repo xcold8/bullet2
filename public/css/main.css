@@ -1,18 +1,3 @@
-.table-list-counter {display:inline-block;}
-.table-list-counter i{padding-left:10px;}
-.table-list-counter span{padding-left:7px;}
-.table-list-filters{display:inline-block; padding-left:250px;}
-span.filters{padding-right:55px;}
-.metadata{margin:0 auto;}
-.metadata div{display:inline-block;}
-#js-issues-toolbar{height:55px;padding-top:18px;}
-#logOut{cursor:pointer;}
-#newTask a {color:white;}
-.card {margin:0 auto;width:900px !important;}
-.list_cont .fourteen.wide{;}
-.list_cont .three.wide{;}
-.list_cont .two.wide{;}
-.list_cont .one.wide{;}
-.tab.segment.active{min-height:500px;}
+.ui.container{min-height:500px;}
 
 

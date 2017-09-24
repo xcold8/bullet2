@@ -12,11 +12,14 @@
     <script type="text/javascript" src="/css/newtask.js"></script>
     <script type="text/javascript" src="/css/taskfeed.js"></script>
 </head>
+  <div class="ui inverted segment">
+    <div class="ui large centered header">Bullet</div>
+    <div class="ui medium centered header">Work Desk V2</div>
+    <div class="ui small centered header">Single Task Mode</div>
+  </div>
 <body>
-    <div class="ui dimmer">
-        <div class="ui text loader">Loading</div>
-    </div>
-      <p></p>
+  <div class="ui dimmer">
+    <div class="ui text loader">Loading</div>
   </div>
   <div class="ui container">
     <div class="ui segment">
@@ -26,6 +29,7 @@
           <div class="ui large header" id="task_title"></div>
           <p id="task_id"></p>
           <div class="extra">
+            <span class="ui tiny">Ticket Status:</span>
             <div class="ui yellow label" id="task_status">
               <i class="info circle icon"></i>
             </div>
@@ -36,82 +40,83 @@
                 <select name="assigned_this" multiple="" class="ui selection dropdown" id="assigned_tview"></select>
                 <div class="ui basic tiny button" id="update_assignees">Update assignees list</div>
               </div>
-              <div class="assignee_btn">
-              Assignees:
-              </div>
+            <div class="assignee_btn">
+              <span class="as-header">Assignees:</span>
             </div>
+          </div>
             <br/>
             <div class="creator">
               <span id="task_creator"></span>
-                <div class="create_info">created this ticket - <span id="com_num">Comments</span></div>
+              <div class="create_info">created this ticket - <span id="com_num">Comments</span></div>
             </div>
           </div>
         </div>
       </div>
     </div>
     <div class="ui divider"></div>
-
-        <div id="comments_cont"></div>
-
-
-        <div class="newComment">
-          <div class="ui form">
-            <div class="field">
-              <label>Add a comment...</label>
-              <textarea class="c_body tinymce"></textarea>
-            </div>
+    <div id="comments_cont"></div>
+    <div class="ui segment">
+      <div class="newComment">
+        <div class="ui form">
+          <div class="field">
+            <label>Add a comment...</label>
+            <textarea class="c_body tinymce"></textarea>
           </div>
         </div>
-        <div id="sComment" class="ui large purple button">Submit</div>
-        <div class="ui right floated buttons btncontainer">
-          <div class="newt">
-            <div id="t_start" class="ui button start assignee">Start</div>
-            <div class="ui yellow label creator">Unstarted</div>
-          </div>
-          <div class="startedt">
-            <div id="t_finish" class="ui button assignee">Finish</div>
-            <div class="ui blue label creator">Started</div>
-          </div>
-          <div class="finishedt">
-            <div id="t_unfinish" class="ui button assignee">Unfinish</div>
-            <div class="arbuttons creator">
-              <div class="ui teal label">Finished</div>  
-              <div id="t_accept" class="ui green button accept">Accept</div>
-              <div id="t_reject" class="ui red button reject">Reject</div>
-            </div>
-          </div>
-          <div class="rejectedt">
-            <div class="ui orange label creator">Rejected</div>
-            <div id="t_restart" class="ui button assignee">Restart</div>
-          </div>
-          <div class="acceptedt">
-            <div class="ui green label">Accepted</div>
-          </div>
-        </div>
-</div>
-      
-
-  <script id="comment_template" type="text/x-handlebars-template">
-    {{#each comments}}
-    <div class="ui attached teal message user_action">
-      <div class="ui tiny header">
-        {{creator.first_name}} {{creator.last_name}} commented {{created_ago}}
       </div>
     </div>
-    <div class="ui attached fluid message textarea_body">
-      {{title}}
-    </div><br/>
-    {{/each}}
+    <div id="sComment" class="ui basic purple button">Submit</div>
+    <div class="ui right floated buttons btncontainer">
+      <div class="newt">
+        <div id="t_start" class="ui button start assignee">Start</div>
+        <div class="ui yellow label creator">Unstarted</div>
+      </div>
+      <div class="startedt">
+        <div id="t_finish" class="ui button assignee">Finish</div>
+        <div class="ui blue label creator">Started</div>
+      </div>
+      <div class="finishedt">
+        <div id="t_unfinish" class="ui button assignee">Unfinish</div>
+        <div class="arbuttons creator">
+          <div class="ui teal label">Finished</div>  
+          <div id="t_accept" class="ui green button accept">Accept</div>
+          <div id="t_reject" class="ui red button reject">Reject</div>
+        </div>
+      </div>
+      <div class="rejectedt">
+        <div class="ui orange label creator">Rejected</div>
+        <div id="t_restart" class="ui button assignee">Restart</div>
+      </div>
+      <div class="acceptedt">
+        <div class="ui green label">Accepted</div>
+      </div>
+    </div>
+  </div>
+  
+<script id="comment_template" type="text/x-handlebars-template">
+  {{#each comments}}
+  <div class="ui attached teal message user_action">
+    <div class="ui tiny header">
+      {{creator.first_name}} {{creator.last_name}} commented {{created_ago}}
+    </div>
+  </div>
+  <div class="ui attached fluid message textarea_body">
+    {{title}}
+  </div><br/>
+  {{/each}}
 </script>
-  <script id="assigndropdown_tview" type="text/x-handlebars-template">
-    {{#each assignees}}
+<script id="assigndropdown_tview" type="text/x-handlebars-template">
+  {{#each assignees}}
+  <option value={{_id}}>{{first_name}}</option>
+  {{/each}}
+</script>
+  <script id="allindropdown" type="text/x-handlebars-template">
+  {{#each objects}}
     <option value={{_id}}>{{first_name}}</option>
-    {{/each}}
-  </script>
-    <script id="allindropdown" type="text/x-handlebars-template">
-    {{#each objects}}
-      <option value={{_id}}>{{first_name}}</option>
-    {{/each}}
-  </script>
+  {{/each}}
+</script>
+<div class="ui segment footer">
+  Phanatic 2017
+</div>
 </body>
 </html>

@@ -2,6 +2,25 @@ var current_user = null;
 var taskForCommentData = null;
 
 $(document).ready(function(){
+	function load_task_data(){
+		$('.dimmer').addClass('active');
+			$.ajax({
+				type: 'GET',
+				async: true,
+				dataType: 'json',
+				url: '/api/task/'+getSegment(window.location.href, 2),
+				success: function(res){
+					current_user = res.current_user;
+					showTaskOnFeed(res);
+					var button_selector = modifyCssByData(res);
+					var assignees_selector = getAssigneesSelector(res);
+					$(button_selector).addClass('active');
+					$(assignees_selector).addClass('active');
+					showUserInDropdown(res);
+					$('.dimmer').removeClass('active');
+				}
+			});
+	}
 
 	//shows the current active users selected in dropdown
 	function showUserInDropdown(data){
@@ -16,7 +35,7 @@ $(document).ready(function(){
 				for (var j=0;j<wrapper.assignees.length; j++){
 					if (wrapperinho.objects[i]._id.toString() == wrapper.assignees[j]._id.toString()){
 						$('#assigned_tview').dropdown('set selected', wrapperinho.objects[i].first_name);
-						$('.assignee_btn').append('<div class="ui teal label">'+wrapperinho.objects[i].first_name+'</div>');
+						$('.assignee_btn').html('Assignees: <div class="ui teal label">'+wrapperinho.objects[i].first_name+'</div>');
 					}
 				}
 			}
@@ -139,7 +158,7 @@ $(document).ready(function(){
 
 		$.ajax({
 			type: 'POST',
-			async: true,
+			async: true, 
 			data: new_comm,
 			datatype: 'json',
 			url: '/api/newComment',
@@ -148,7 +167,7 @@ $(document).ready(function(){
 			}
 		});
 	});
-		function load_task_data(){
+		function  _data(){
 			$('.dimmer').addClass('active');
 			$.ajax({
 				type: 'GET',
@@ -222,7 +241,7 @@ function showTaskOnFeed(data){
 			}
 			else {
 				$.post('/api/task/'+getSegment(window.location.href, 2)+'/updateAssignees', {new_assignees: $updated_assignees}, function(res){
-					console.log(res);
+					
 				});
 			}
 
