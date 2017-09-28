@@ -253,15 +253,3 @@ function showTaskOnFeed(data){
 
 
 });
-
-	
-
-
-
-
-	
-
-
-
-
-	
